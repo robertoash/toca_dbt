@@ -1,0 +1,49 @@
+version: 2
+
+sources:
+  - name: ae_assignment_data  # Logical name for the dataset
+    description: "Raw data from Firebase"
+    database: toca-data-science-assignment  # The GCP project ID
+    schema: ae_assignment_data  # The dataset name in BigQuery
+    tables:
+      - name: events
+        description: "{{ doc('events_table') }}"
+        columns:
+          - name: event_date
+            description: "{{ doc('event_date') }}"
+          - name: event_timestamp
+            description: "{{ doc('event_timestamp') }}"
+          - name: event_name
+            description: "{{ doc('event_name') }}"
+          - name: event_params
+            description: "{{ doc('event_params') }}"
+          - name: device_id
+            description: "{{ doc('device_id') }}"
+          - name: install_id
+            description: "{{ doc('install_id') }}"
+          - name: device_category
+            description: "{{ doc('device_category') }}"
+          - name: install_source
+            description: "{{ doc('install_source') }}"
+
+      - name: exchange_rates
+        description: "{{ doc('exchange_rates_table') }}"
+        columns:
+          - name: dt
+            description: "{{ doc('currency_exchange_date') }}"
+          - name: currency_code
+            description: "{{ doc('currency_code') }}"
+          - name: usd_per_currency
+            description: "{{ doc('usd_per_currency') }}"
+          - name: is_extrapolated
+            description: "{{ doc('is_extrapolated') }}"
+
+      - name: products
+        description: "{{ doc('products_table') }}"
+        columns:
+          - name: product_name
+            description: "{{ doc('product_name') }}"
+          - name: product_type
+            description: "{{ doc('product_type') }}"
+          - name: product_subtype
+            description: "{{ doc('product_subtype') }}"
