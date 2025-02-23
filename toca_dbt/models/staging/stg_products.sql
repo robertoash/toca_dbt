@@ -1,14 +1,15 @@
 {{
     config(
-        materialized = 'view'
+        materialized = 'view',
+        primary_key = 'product_id'
     )
 }}
 
 WITH products AS (
     SELECT
-        LOWER(TRIM(product_name)) AS product_name,
-        LOWER(TRIM(type)) AS product_type,
-        LOWER(TRIM(subtype)) AS product_subtype
+        {{ snake_case('product_name') }} AS product_name,
+        {{ snake_case('type') }} AS product_type,
+        {{ snake_case('subtype') }} AS product_subtype
     FROM {{ source('ae_assignment_data', 'products') }}
 )
 

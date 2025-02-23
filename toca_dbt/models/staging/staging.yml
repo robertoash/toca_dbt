@@ -4,6 +4,11 @@ models:
   - name: stg_events
     description: "{{ doc('events_table') }}"
     columns:
+      - name: event_id
+        description: "{{ doc('event_id') }}"
+        tests:
+          - unique
+          - not_null
       - name: event_date
         description: "{{ doc('event_date') }}"
       - name: event_timestamp
@@ -22,6 +27,11 @@ models:
         description: "{{ doc('install_source') }}"
   - name: stg_exchange_rates
     description: "{{ doc('exchange_rates_table') }}"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - currency_exchange_date
+            - currency_code
     columns:
       - name: currency_exchange_date
         description: "{{ doc('currency_exchange_date') }}"
@@ -36,6 +46,9 @@ models:
     columns:
       - name: product_name
         description: "{{ doc('product_name') }}"
+        tests:
+          - not_null
+          - unique
       - name: product_type
         description: "{{ doc('product_type') }}"
       - name: product_subtype
