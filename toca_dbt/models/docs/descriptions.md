@@ -32,6 +32,10 @@ Contains aggregated visit data for the app.
 Contains device retention data over time.
 {% enddocs %}
 
+{% docs first_purchase_product_table %}
+Contains aggregated data about the products bought as a first purchase.
+{% enddocs %}
+
 # Column docs
 
 ## Events table
@@ -184,4 +188,18 @@ Ratio of users who installed the app on the day of installation to those of them
 
 {% docs d7_retention_rate %}
 Ratio of users who installed the app on the day of installation to those of them that returned within the next 7 days.
+{% enddocs %}
+
+## First purchase product table
+
+{% docs first_purchase_date %}
+Date of the first purchase.
+{% enddocs %}
+
+{% docs total_first_time_purchases %}
+Number of first-time purchases for a given first purchase date regardless of product.
+{% enddocs %}
+
+{% docs product_first_time_purchases %}
+Number of first-time purchases of the product for a given first purchase date.
 {% enddocs %}
