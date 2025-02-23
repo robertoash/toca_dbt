@@ -10,7 +10,7 @@
 
 WITH base AS (
     SELECT
-        {{ primary_key_gen(['event_timestamp', 'install_id', 'event_name']) }} AS event_id,
+        {{ dbt_utils.generate_surrogate_key(['event_timestamp', 'install_id', 'event_name']) }} AS event_id,
         event_date,
         event_timestamp,
         event_name,
@@ -24,17 +24,18 @@ WITH base AS (
 
 deduplicated AS (
     SELECT
+        event_id,
         event_date,
         event_timestamp,
         event_name,
-        -- Use MAX() to ensure the non-null device_id is retained
+        -- Use MAX() to keep non-null device_id
         MAX(device_id) OVER (
-            PARTITION BY event_id
+            PARTITION BY event_timestamp, install_id, event_name
         ) AS device_id,
         install_id,
         device_category,
         install_source,
-        -- Sort event_params while keeping the original structure
+        -- Sort event_params to prevent duplicates
         (
             SELECT ARRAY_AGG(
                 STRUCT(
@@ -50,16 +51,13 @@ deduplicated AS (
             )
             FROM UNNEST(event_params)
         ) AS event_params,
-        -- Assign row numbers to pick the row with the most keys
-        ROW_NUMBER() OVER (
-            PARTITION BY event_id
-            ORDER BY ARRAY_LENGTH(event_params) DESC
-        ) AS row_num
     FROM base
-    -- Deduplicate by picking the row with the most keys
-    QUALIFY row_num = 1
+    -- Pick the row with the most keys
+    QUALIFY ROW_NUMBER() OVER (
+        PARTITION BY event_id
+        ORDER BY ARRAY_LENGTH(event_params) DESC
+    ) = 1
 )
 
-SELECT
-    *
+SELECT *
 FROM deduplicated
