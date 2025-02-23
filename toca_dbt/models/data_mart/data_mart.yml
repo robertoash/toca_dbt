@@ -22,40 +22,61 @@ models:
         description: "{{ doc('price_local') }}"
         tests:
           - dbt_utils.expression_is_true:
-              expression: "price_local >= 0"
+              expression: ">= 0"
       - name: currency_code
         description: "{{ doc('currency_code') }}"
       - name: revenue_local
         description: "{{ doc('revenue_local') }}"
         tests:
           - dbt_utils.expression_is_true:
-              expression: "revenue_local >= 0"
+              expression: ">= 0"
       - name: price_usd
         description: "{{ doc('price_usd') }}"
         tests:
           - dbt_utils.expression_is_true:
-              expression: "price_usd >= 0"
+              expression: ">= 0"
       - name: revenue_usd
         description: "{{ doc('revenue_usd') }}"
         tests:
           - dbt_utils.expression_is_true:
-              expression: "revenue_usd >= 0"
+              expression: ">= 0"
   - name: fact_visits
     description: "{{ doc('fact_visits_table') }}"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - event_date
+            - device_category
+            - install_source
     columns:
       - name: event_date
         description: "{{ doc('event_date') }}"
         tests:
           - not_null
-          - unique
+      - name: install_source
+        description: "{{ doc('install_source') }}"
+      - name: device_category
+        description: "{{ doc('device_category') }}"
       - name: store_impressions
         description: "{{ doc('store_impressions') }}"
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
       - name: store_entries
         description: "{{ doc('store_entries') }}"
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
       - name: unique_sessions
         description: "{{ doc('unique_sessions') }}"
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
       - name: recurring_store_entries
         description: "{{ doc('recurring_store_entries') }}"
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
       - name: store_entry_conversion_rate
         description: "{{ doc('store_entry_conversion_rate') }}"
   - name: retention_over_time
@@ -80,3 +101,21 @@ models:
         description: "{{ doc('d3_retention_rate') }}"
       - name: d7_retention_rate
         description: "{{ doc('d7_retention_rate') }}"
+  - name: first_purchase_product
+    description: "{{ doc('first_purchase_product_table') }}"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - first_purchase_date
+            - product_name
+    columns:
+      - name: first_purchase_date
+        description: "{{ doc('first_purchase_date') }}"
+        tests:
+          - not_null
+      - name: product_name
+        description: "{{ doc('product_name') }}"
+      - name: total_first_time_purchases
+        description: "{{ doc('total_first_time_purchases') }}"
+      - name: product_first_time_purchases
+        description: "{{ doc('product_first_time_purchases') }}"

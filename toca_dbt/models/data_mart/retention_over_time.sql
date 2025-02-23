@@ -40,13 +40,5 @@ retention_funnel AS (
     GROUP BY install_date
 )
 
-SELECT
-    install_date,
-    d0_users,
-    d1_retained_users,
-    d3_retained_users,
-    d7_retained_users,
-    SAFE_DIVIDE(d1_retained_users, d0_users) AS d1_retention_rate,
-    SAFE_DIVIDE(d3_retained_users, d0_users) AS d3_retention_rate,
-    SAFE_DIVIDE(d7_retained_users, d0_users) AS d7_retention_rate
+SELECT *
 FROM retention_funnel

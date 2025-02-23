@@ -31,7 +31,10 @@ store_funnel AS (
         END) AS recurring_store_entries
     FROM {{ ref('intm_events') }} AS e
     LEFT JOIN past_purchases AS p ON e.device_id = p.device_id
-    GROUP BY e.event_date
+    GROUP BY
+        e.event_date,
+        e.device_category,
+        e.install_source
 ),
 
 conversion_rates AS (
