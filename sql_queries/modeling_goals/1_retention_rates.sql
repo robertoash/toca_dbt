@@ -8,6 +8,6 @@ SELECT
     ROUND(SAFE_DIVIDE(SUM(d1_retained_users), SUM(d0_users)), 2) AS d1_retention_rate,
     ROUND(SAFE_DIVIDE(SUM(d3_retained_users), SUM(d0_users)), 2) AS d3_retention_rate,
     ROUND(SAFE_DIVIDE(SUM(d7_retained_users), SUM(d0_users)), 2) AS d7_retention_rate
-FROM `toca-data-science-assignment.ra_ae_assignment.retention_over_time`
+FROM `toca-data-science-assignment.ra_ae_assignment.mart_retention_over_time`
 GROUP BY install_month
 ORDER BY install_month DESC;
