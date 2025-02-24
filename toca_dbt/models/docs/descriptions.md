@@ -12,27 +12,19 @@ Represents daily exchange rates for various currencies.
 Contains product catalog data for in-game purchases.
 {% enddocs %}
 
-{% docs purchases_table %}
-Contains purchase data for in-game purchases.
-{% enddocs %}
-
-{% docs visits_table %}
-Contains visit tracking data for the app.
-{% enddocs %}
-
 {% docs fact_purchases_table %}
 Contains aggregated purchase data for in-game purchases.
 {% enddocs %}
 
-{% docs fact_visits_table %}
-Contains aggregated visit data for the app.
+{% docs fact_telemetry_table %}
+Contains aggregated telemetry data for the app.
 {% enddocs %}
 
-{% docs retention_over_time_table %}
+{% docs mart_retention_over_time_table %}
 Contains device retention data over time.
 {% enddocs %}
 
-{% docs first_purchase_product_table %}
+{% docs mart_first_purchase_product_table %}
 Contains aggregated data about the products bought as a first purchase.
 {% enddocs %}
 
@@ -77,10 +69,6 @@ Store where the app was downloaded (e.g., Google Play, Apple App Store).
 {% enddocs %}
 
 ## Exchange rates table
-
-{% docs exchange_rate_key %}
-Unique identifier for each exchange rate record.
-{% enddocs %}
 
 {% docs currency_exchange_date %}
 Date of the currency exchange data.
@@ -134,26 +122,14 @@ Price of the product in USD.
 Revenue of the product in USD.
 {% enddocs %}
 
-## Fact visits table
+## Fact telemetry table
 
-{% docs store_impressions %}
-Number of times the store was shown to the user.
+{% docs store_impression_device_id %}
+Unique identifier for a device that was shown the store.
 {% enddocs %}
 
-{% docs store_entries %}
-Number of times the user entered the store.
-{% enddocs %}
-
-{% docs unique_sessions %}
-Number of unique sessions.
-{% enddocs %}
-
-{% docs recurring_store_entries %}
-Number of store entries made by a user after their last purchase.
-{% enddocs %}
-
-{% docs store_entry_conversion_rate %}
-Ratio of store entries to unique sessions.
+{% docs store_entry_device_id %}
+Unique identifier for a device that entered the store.
 {% enddocs %}
 
 ## Retention over time table
@@ -197,7 +173,7 @@ Date of the first purchase.
 {% enddocs %}
 
 {% docs total_first_time_purchases %}
-Number of first-time purchases for a given first purchase date regardless of product.
+Number of first-time purchases for a given date regardless of product.
 {% enddocs %}
 
 {% docs product_first_time_purchases %}

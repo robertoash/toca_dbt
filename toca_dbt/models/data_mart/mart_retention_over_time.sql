@@ -5,11 +5,16 @@
     )
 }}
 
+/*
+    Retention is here defined as generating any telemetry event within a given period after
+    generating a first event. The period can be 1, 3 or 7 days.
+*/
+
 WITH first_sessions AS (
     SELECT
         device_id,
         MIN(event_date) AS install_date
-    FROM {{ ref('intm_events') }}
+    FROM {{ ref('intm_all_events') }}
     GROUP BY device_id
 ),
 
@@ -21,8 +26,8 @@ retention_data AS (
         MIN(CASE WHEN DATE_DIFF(later_events.event_date, first_sessions.install_date, DAY) BETWEEN 2 AND 3 THEN 'D3' END) AS D3,
         MIN(CASE WHEN DATE_DIFF(later_events.event_date, first_sessions.install_date, DAY) BETWEEN 4 AND 7 THEN 'D7' END) AS D7
     FROM first_sessions
-    JOIN {{ ref('intm_events') }} AS later_events
-        ON first_sessions.device_id = later_events.device_id  -- Ensure we track the same user
+    JOIN {{ ref('intm_all_events') }} AS later_events
+        ON first_sessions.device_id = later_events.device_id
     WHERE DATE_DIFF(later_events.event_date, first_sessions.install_date, DAY) BETWEEN 1 AND 7
     GROUP BY
         first_sessions.install_date,

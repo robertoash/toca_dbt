@@ -3,9 +3,17 @@ version: 2
 models:
   - name: fact_purchases
     description: "{{ doc('fact_purchases_table') }}"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - event_date
+            - device_id
+            - product_name
     columns:
       - name: event_date
         description: "{{ doc('event_date') }}"
+      - name: device_id
+        description: "{{ doc('device_id') }}"
       - name: install_source
         description: "{{ doc('install_source') }}"
       - name: device_category
@@ -18,20 +26,10 @@ models:
         description: "{{ doc('product_subtype') }}"
       - name: quantity
         description: "{{ doc('quantity') }}"
-      - name: price_local
-        description: "{{ doc('price_local') }}"
-        tests:
-          - dbt_utils.expression_is_true:
-              expression: ">= 0"
       - name: currency_code
         description: "{{ doc('currency_code') }}"
       - name: revenue_local
         description: "{{ doc('revenue_local') }}"
-        tests:
-          - dbt_utils.expression_is_true:
-              expression: ">= 0"
-      - name: price_usd
-        description: "{{ doc('price_usd') }}"
         tests:
           - dbt_utils.expression_is_true:
               expression: ">= 0"
@@ -40,14 +38,15 @@ models:
         tests:
           - dbt_utils.expression_is_true:
               expression: ">= 0"
-  - name: fact_visits
-    description: "{{ doc('fact_visits_table') }}"
+  - name: fact_telemetry
+    description: "{{ doc('fact_telemetry_table') }}"
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
             - event_date
-            - device_category
+            - device_id
             - install_source
+            - device_category
     columns:
       - name: event_date
         description: "{{ doc('event_date') }}"
@@ -57,30 +56,12 @@ models:
         description: "{{ doc('install_source') }}"
       - name: device_category
         description: "{{ doc('device_category') }}"
-      - name: store_impressions
-        description: "{{ doc('store_impressions') }}"
-        tests:
-          - dbt_utils.expression_is_true:
-              expression: ">= 0"
-      - name: store_entries
-        description: "{{ doc('store_entries') }}"
-        tests:
-          - dbt_utils.expression_is_true:
-              expression: ">= 0"
-      - name: unique_sessions
-        description: "{{ doc('unique_sessions') }}"
-        tests:
-          - dbt_utils.expression_is_true:
-              expression: ">= 0"
-      - name: recurring_store_entries
-        description: "{{ doc('recurring_store_entries') }}"
-        tests:
-          - dbt_utils.expression_is_true:
-              expression: ">= 0"
-      - name: store_entry_conversion_rate
-        description: "{{ doc('store_entry_conversion_rate') }}"
-  - name: retention_over_time
-    description: "{{ doc('retention_over_time_table') }}"
+      - name: store_impression_device_id
+        description: "{{ doc('store_impression_device_id') }}"
+      - name: store_entry_device_id
+        description: "{{ doc('store_entry_device_id') }}"
+  - name: mart_retention_over_time
+    description: "{{ doc('mart_retention_over_time_table') }}"
     columns:
       - name: install_date
         description: "{{ doc('install_date') }}"
@@ -101,8 +82,8 @@ models:
         description: "{{ doc('d3_retention_rate') }}"
       - name: d7_retention_rate
         description: "{{ doc('d7_retention_rate') }}"
-  - name: first_purchase_product
-    description: "{{ doc('first_purchase_product_table') }}"
+  - name: mart_first_purchase_product
+    description: "{{ doc('mart_first_purchase_product_table') }}"
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
@@ -115,7 +96,36 @@ models:
           - not_null
       - name: product_name
         description: "{{ doc('product_name') }}"
-      - name: total_first_time_purchases
-        description: "{{ doc('total_first_time_purchases') }}"
       - name: product_first_time_purchases
         description: "{{ doc('product_first_time_purchases') }}"
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+  - name: dim_product
+    description: "{{ doc('products_table') }}"
+    columns:
+      - name: product_name
+        description: "{{ doc('product_name') }}"
+        tests:
+          - not_null
+          - unique
+      - name: product_type
+        description: "{{ doc('product_type') }}"
+      - name: product_subtype
+        description: "{{ doc('product_subtype') }}"
+  - name: dim_exchange_rates
+    description: "{{ doc('exchange_rates_table') }}"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - currency_exchange_date
+            - currency_code
+    columns:
+      - name: currency_exchange_date
+        description: "{{ doc('currency_exchange_date') }}"
+        tests:
+          - not_null
+      - name: currency_code
+        description: "{{ doc('currency_code') }}"
+      - name: usd_per_currency
+        description: "{{ doc('usd_per_currency') }}"
