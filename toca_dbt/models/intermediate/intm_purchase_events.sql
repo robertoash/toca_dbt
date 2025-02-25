@@ -35,7 +35,7 @@ WITH purchase_events AS (
     WHERE event_name = 'in_app_purchase'
     {% if is_incremental() %}
         -- Pull the last 7 days of data to account for event loading delays
-        AND event_timestamp >= {{ incremental_window('event_timestamp', 7) }}
+        AND event_timestamp >= {{ incremental_window('event_timestamp', 2) }}
     {% endif %}
 )
 

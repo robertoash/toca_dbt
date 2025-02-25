@@ -1,4 +1,4 @@
-{% macro incremental_window(timestamp_col, window_days=7) %}
+{% macro incremental_window(timestamp_col, window_days=2) %}
 LEAST(
     TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL {{ window_days }} DAY),
     (

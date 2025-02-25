@@ -86,7 +86,7 @@ WITH events AS (
     WHERE device_id IS NOT NULL
     {% if is_incremental() %}
         -- Pull the last 7 days of data to account for event loading delays
-        AND event_timestamp >= {{ incremental_window('event_timestamp', 7) }}
+        AND event_timestamp >= {{ incremental_window('event_timestamp', 2) }}
     {% endif %}
     GROUP BY
         event_id,
