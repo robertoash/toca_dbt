@@ -63,6 +63,6 @@ retention_tiers AS (
 
 SELECT
     install_date,
-    device_id,
+    device_id, -- This is meant to be count distincted
     retention_tier
 FROM retention_tiers

@@ -125,7 +125,7 @@ funnel_steps AS (
 
 final_data AS (
     SELECT
-        fs.device_id,
+        fs.device_id, -- This is meant to be count distincted when aggregated
         ap.first_telemetry_date,
         sv.first_store_visit_date,
         fc.first_purchase_date,
