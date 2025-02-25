@@ -1,13 +1,13 @@
 {{
     config(
         materialized = 'table',
-        partition_by = {"field": "install_date", "data_type": "DATE"},
+        partition_by = {"field": "first_active_date", "data_type": "DATE"},
         tags = ['daily']
     )
 }}
 
 /*
-    Retention is here defined as generating any telemetry event within a given period after
+    Retention is here defined as generating any event within a given period after
     generating a first event. The period can be 1, 3 or 7 days.
 */
 
@@ -15,7 +15,7 @@ WITH event_data AS (
     SELECT
         device_id,
         DATE_DIFF(event_date, MIN(event_date) OVER (PARTITION BY device_id), DAY) AS retention_days,
-        MIN(event_date) OVER (PARTITION BY device_id) AS install_date
+        MIN(event_date) OVER (PARTITION BY device_id) AS first_active_date
     FROM {{ ref('intm_all_events') }}
     GROUP BY
         device_id,
@@ -26,7 +26,7 @@ retention_tiers AS (
     -- D0 tier (all users)
     SELECT DISTINCT
         device_id,
-        install_date,
+        first_active_date,
         'D0' AS retention_tier
     FROM event_data
 
@@ -35,7 +35,7 @@ retention_tiers AS (
     -- D1 tier
     SELECT DISTINCT
         device_id,
-        install_date,
+        first_active_date,
         'D1' AS retention_tier
     FROM event_data
     WHERE retention_days = 1
@@ -45,7 +45,7 @@ retention_tiers AS (
     -- D3 tier
     SELECT DISTINCT
         device_id,
-        install_date,
+        first_active_date,
         'D3' AS retention_tier
     FROM event_data
     WHERE retention_days BETWEEN 2 AND 3
@@ -55,14 +55,14 @@ retention_tiers AS (
     -- D7 tier
     SELECT DISTINCT
         device_id,
-        install_date,
+        first_active_date,
         'D7' AS retention_tier
     FROM event_data
     WHERE retention_days BETWEEN 4 AND 7
 )
 
 SELECT
-    install_date,
+    first_active_date,
     device_id, -- This is meant to be count distincted
     retention_tier
 FROM retention_tiers

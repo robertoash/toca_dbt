@@ -1,13 +1,13 @@
 {{
     config(
         materialized = 'table',
-        partition_by = {"field": "first_telemetry_date", "data_type": "DATE"},
+        partition_by = {"field": "first_active_date", "data_type": "DATE"},
         cluster_by = ['first_purchase_date'],
         tags = ['daily']
     )
 }}
 
-WITH telemetry_data AS (
+WITH event_data AS (
     SELECT
         device_id,
         event_date,
@@ -18,13 +18,13 @@ WITH telemetry_data AS (
 purchase_data AS (
     SELECT
         device_id,
-        event_date AS purchase_date,
+        purchase_date,
         product_name,
         product_type,
         product_subtype,
-        LEAD(event_date) OVER (
+        LEAD(purchase_date) OVER (
             PARTITION BY device_id
-            ORDER BY event_date
+            ORDER BY purchase_date
         ) AS next_purchase_date
     FROM {{ ref('fact_purchases') }}
 ),
@@ -34,7 +34,7 @@ store_visitors AS (
         device_id,
         event_date,
         MIN(event_date) OVER (PARTITION BY device_id) AS first_store_visit_date
-    FROM telemetry_data
+    FROM event_data
     WHERE event_name = 'store_entry'
     GROUP BY
         device_id,
@@ -44,8 +44,8 @@ store_visitors AS (
 all_players AS (
     SELECT
         device_id,
-        MIN(event_date) AS first_telemetry_date
-    FROM telemetry_data
+        MIN(event_date) AS first_active_date
+    FROM event_data
     GROUP BY device_id
 ),
 
@@ -126,7 +126,7 @@ funnel_steps AS (
 final_data AS (
     SELECT
         fs.device_id, -- This is meant to be count distincted when aggregated
-        ap.first_telemetry_date,
+        ap.first_active_date,
         sv.first_store_visit_date,
         fc.first_purchase_date,
         fc.first_purchase_product,

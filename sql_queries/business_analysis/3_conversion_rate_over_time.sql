@@ -2,12 +2,12 @@
 SELECT *
 FROM (
     SELECT
-        DATE_TRUNC(first_telemetry_date, MONTH) AS telemetry_month,
+        DATE_TRUNC(first_active_date, MONTH) AS first_active_month,
         funnel_step,
         COUNT(DISTINCT device_id) AS player_count
     FROM `ra_ae_assignment.tracker_player_behavior`
     GROUP BY
-        telemetry_month,
+        first_active_month,
         funnel_step
 )
 PIVOT (
@@ -20,4 +20,4 @@ PIVOT (
         'Non-Converted Players'
     )
 )
-ORDER BY telemetry_month;
+ORDER BY first_active_month;

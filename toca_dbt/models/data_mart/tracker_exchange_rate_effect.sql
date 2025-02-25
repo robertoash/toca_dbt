@@ -1,7 +1,7 @@
 {{
     config(
         materialized = 'table',
-        partition_by = {"field": "event_date", "data_type": "DATE"},
+        partition_by = {"field": "purchase_date", "data_type": "DATE"},
         cluster_by = ['product_name', 'currency_code'],
         tags = ['daily']
     )
@@ -17,14 +17,14 @@ WITH exchange_rates AS (
 
 purchases AS (
     SELECT
-        event_date,
+        purchase_date,
         product_name,
         currency_code,
         revenue_usd,
         SUM(quantity) AS quantity
     FROM {{ ref('fact_purchases') }}
     GROUP BY
-        event_date,
+        purchase_date,
         product_name,
         currency_code,
         revenue_usd
@@ -33,20 +33,20 @@ purchases AS (
 product_usd_prices AS (
     -- Get the average revenue in USD for each product when purchased in USD
     SELECT
-        event_date,
+        purchase_date,
         product_name,
         AVG(revenue_usd) AS avg_usd_revenue
     FROM purchases
     WHERE currency_code = 'USD'
     GROUP BY
-        event_date,
+        purchase_date,
         product_name
 ),
 
 product_other_prices AS (
     -- Get the average revenue in USD for each product when purchased in USD
     SELECT
-        event_date,
+        purchase_date,
         product_name,
         currency_code,
         AVG(revenue_usd) AS avg_usd_revenue,
@@ -54,7 +54,7 @@ product_other_prices AS (
     FROM purchases
     WHERE currency_code != 'USD'
     GROUP BY
-        event_date,
+        purchase_date,
         product_name,
         currency_code
 ),
@@ -62,7 +62,7 @@ product_other_prices AS (
 currency_deviation AS (
     -- Compare the average revenue in USD for the same products sold in other currencies
     SELECT
-        pu.event_date,
+        pu.purchase_date,
         pu.product_name,
         po.currency_code,
         xr.exchange_rate,
@@ -72,15 +72,15 @@ currency_deviation AS (
         po.quantity AS quantity
     FROM product_other_prices AS po
     INNER JOIN product_usd_prices AS pu
-        ON pu.event_date = po.event_date
+        ON pu.purchase_date = po.purchase_date
         AND pu.product_name = po.product_name
     INNER JOIN exchange_rates AS xr
-        ON xr.currency_exchange_date = po.event_date
+        ON xr.currency_exchange_date = po.purchase_date
         AND xr.currency_code = po.currency_code
 )
 
 SELECT
-    event_date,
+    purchase_date,
     currency_code,
     product_name,
     exchange_rate, -- This should be averaged when aggregated

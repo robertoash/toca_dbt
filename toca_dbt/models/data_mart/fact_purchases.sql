@@ -1,7 +1,7 @@
 {{
     config(
         materialized = 'table',
-        partition_by = {"field": "event_date", "data_type": "DATE"},
+        partition_by = {"field": "purchase_date", "data_type": "DATE"},
         cluster_by = ['product_name', 'device_category', 'install_source'],
         tags = ['hourly']
     )
@@ -22,10 +22,10 @@ WITH purchase_events AS (
     FROM {{ ref('intm_purchase_events') }}
 ),
 
-telemetry_events AS (
+all_events AS (
     SELECT
         device_id,
-        MIN(event_date) AS first_telemetry_date
+        MIN(event_date) AS first_active_date
     FROM {{ ref('intm_all_events') }}
     GROUP BY device_id
 ),
@@ -52,9 +52,9 @@ with_exchange_rates AS (
 )
 
 SELECT
-    xr.event_date,
+    xr.event_date AS purchase_date,
     xr.device_id,
-    te.first_telemetry_date,
+    ae.first_active_date,
     xr.install_source,
     xr.device_category,
     xr.product_name,
@@ -65,12 +65,12 @@ SELECT
     ROUND(SUM(xr.revenue_local), 2) AS revenue_local,
     ROUND(SUM(xr.revenue_usd), 2) AS revenue_usd
 FROM with_exchange_rates AS xr
-LEFT JOIN telemetry_events AS te
-    ON xr.device_id = te.device_id
+LEFT JOIN all_events AS ae
+    ON xr.device_id = ae.device_id
 GROUP BY
-    xr.event_date,
+    purchase_date,
     xr.device_id,
-    te.first_telemetry_date,
+    ae.first_active_date,
     xr.install_source,
     xr.device_category,
     xr.product_name,

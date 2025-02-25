@@ -144,8 +144,8 @@ Whether the event is part of a subscription.
 
 ## Fact purchases table
 
-{% docs first_telemetry_date %}
-Date of the first telemetry event for a device.
+{% docs purchase_date %}
+Date of the purchase.
 {% enddocs %}
 
 {% docs quantity %}
@@ -166,8 +166,8 @@ Revenue of the product in USD.
 
 ## Retention table
 
-{% docs install_date %}
-Date of the app installation.
+{% docs first_active_date %}
+Date when the user first generated any event.
 {% enddocs %}
 
 {% docs retention_tier %}
@@ -182,20 +182,24 @@ Date of the first purchase.
 
 ## Date dimension table
 
-{% docs event_week %}
-Week of the event.
+{% docs date %}
+Reference to a calendar date.
 {% enddocs %}
 
-{% docs event_month %}
-Month of the event.
+{% docs date_week %}
+Week of the date.
 {% enddocs %}
 
-{% docs event_quarter %}
-Quarter of the event.
+{% docs date_month %}
+Month of the date.
 {% enddocs %}
 
-{% docs event_year %}
-Year of the event.
+{% docs date_quarter %}
+Quarter of the date.
+{% enddocs %}
+
+{% docs date_year %}
+Year of the date.
 {% enddocs %}
 
 ## Player behavior table

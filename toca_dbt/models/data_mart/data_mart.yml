@@ -6,16 +6,16 @@ models:
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
-            - event_date
+            - purchase_date
             - device_id
             - product_name
     columns:
-      - name: event_date
-        description: "{{ doc('event_date') }}"
+      - name: purchase_date
+        description: "{{ doc('purchase_date') }}"
       - name: device_id
         description: "{{ doc('device_id') }}"
-      - name: first_telemetry_date
-        description: "{{ doc('first_telemetry_date') }}"
+      - name: first_active_date
+        description: "{{ doc('first_active_date') }}"
       - name: install_source
         description: "{{ doc('install_source') }}"
       - name: device_category
@@ -48,8 +48,8 @@ models:
             - device_id
             - retention_tier
     columns:
-      - name: install_date
-        description: "{{ doc('install_date') }}"
+      - name: first_active_date
+        description: "{{ doc('first_active_date') }}"
       - name: device_id
         description: "{{ doc('device_id') }}"
       - name: retention_tier
@@ -59,8 +59,8 @@ models:
     columns:
       - name: device_id
         description: "{{ doc('device_id') }}"
-      - name: first_telemetry_date
-        description: "{{ doc('first_telemetry_date') }}"
+      - name: first_active_date
+        description: "{{ doc('first_active_date') }}"
       - name: first_store_visit_date
         description: "{{ doc('first_store_visit_date') }}"
       - name: first_purchase_date
@@ -76,8 +76,8 @@ models:
   - name: tracker_exchange_rate_effect
     description: "{{ doc('tracker_exchange_rate_effect_table') }}"
     columns:
-      - name: event_date
-        description: "{{ doc('event_date') }}"
+      - name: purchase_date
+        description: "{{ doc('purchase_date') }}"
       - name: currency_code
         description: "{{ doc('currency_code') }}"
       - name: product_name
@@ -119,13 +119,13 @@ models:
   - name: dim_date
     description: "{{ doc('dim_date_table') }}"
     columns:
-      - name: event_date
-        description: "{{ doc('event_date') }}"
-      - name: event_week
-        description: "{{ doc('event_week') }}"
-      - name: event_month
-        description: "{{ doc('event_month') }}"
-      - name: event_quarter
-        description: "{{ doc('event_quarter') }}"
-      - name: event_year
-        description: "{{ doc('event_year') }}"
+      - name: date
+        description: "{{ doc('date') }}"
+      - name: date_week
+        description: "{{ doc('date_week') }}"
+      - name: date_month
+        description: "{{ doc('date_month') }}"
+      - name: date_quarter
+        description: "{{ doc('date_quarter') }}"
+      - name: date_year
+        description: "{{ doc('date_year') }}"
