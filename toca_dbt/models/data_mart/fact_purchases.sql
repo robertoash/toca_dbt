@@ -31,7 +31,9 @@ WITH all_events AS (
 ),
 
 purchase_events AS (
-    SELECT *
+    SELECT
+        event_date AS purchase_date,
+        * EXCEPT(event_date)
     FROM all_events
     WHERE event_name = 'in_app_purchase'
 ),
@@ -69,9 +71,9 @@ SELECT
     {{
         dbt_utils.generate_surrogate_key(
             [
-                'purchase_date',
-                'device_id',
-                'product_name'
+                'xr.purchase_date',
+                'xr.device_id',
+                'xr.product_name'
             ]
         )
     }} AS purchase_id,
