@@ -10,4 +10,4 @@ SELECT
     DATE_TRUNC(event_date, MONTH) AS date_month,
     DATE_TRUNC(event_date, QUARTER) AS date_quarter,
     DATE_TRUNC(event_date, YEAR) AS date_year
-FROM {{ ref('intm_all_events') }}
+FROM {{ ref('intm_events') }}

@@ -97,7 +97,36 @@ WITH events AS (
         install_id,
         device_category,
         install_source
+),
+
+enriched_events AS (
+    SELECT
+        events.event_id,
+        events.event_date,
+        events.event_timestamp,
+        events.device_id,
+        events.install_id,
+        events.device_category,
+        events.install_source,
+        events.event_name,
+        events.event_origin,
+        events.event_count,
+        events.product_name,
+        p.product_type,
+        p.product_subtype,
+        events.price_local,
+        events.currency_code,
+        events.quantity,
+        events.reason,
+        events.ga_dedup_id,
+        events.ga_session_id,
+        events.ga_session_number,
+        events.subscription,
+        events.revenue_local
+    FROM events
+    LEFT JOIN {{ ref('stg_products') }} AS p
+        ON events.product_name = p.product_name
 )
 
 SELECT *
-FROM events
+FROM enriched_events

@@ -78,7 +78,7 @@ General assumptions:
     - It is not expected for products to change type and subtype frequently
     - This data is expected to grow up to 20x over time (from 198 products)
 
-### intm_all_events
+### intm_events
 
 ```json
 {
@@ -95,27 +95,6 @@ General assumptions:
     - materialization: incremental // to handle the load without unnecesary updates
     - incremental strategy: merge // we don't expect many updates to the data once loaded
     - cluster_by: event_name // caters for filtering by event name
-    - tags: hourly // could be tweaked based on usage and freshness requirements downstream
-- Assumptions:
-    - Sales data included: high freshness requirements
-
-### intm_purchase_events
-
-```json
-{
-    "materialization": "incremental",
-    "incremental strategy": "merge",
-    "unique key": "event_id",
-    "partition by": "event_date",
-    "cluster by": "product_name",
-    "tags": "hourly"
-}
-```
-
-- Reasoning:
-    - materialization: incremental // to handle the load without unnecesary updates
-    - incremental strategy: merge // we don't expect many updates to the data once loaded
-    - cluster_by: product_name // caters for filtering by product name
     - tags: hourly // could be tweaked based on usage and freshness requirements downstream
 - Assumptions:
     - Sales data included: high freshness requirements

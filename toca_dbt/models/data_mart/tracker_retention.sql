@@ -19,7 +19,7 @@ WITH event_data AS (
         device_id,
         DATE_DIFF(event_date, MIN(event_date) OVER (PARTITION BY device_id), DAY) AS retention_days,
         MIN(event_date) OVER (PARTITION BY device_id) AS first_active_date
-    FROM {{ ref('intm_all_events') }}
+    FROM {{ ref('intm_events') }}
     {% if is_incremental() %}
         WHERE event_date >= {{ incremental_window(event_date, 2) }}
     {% endif %}

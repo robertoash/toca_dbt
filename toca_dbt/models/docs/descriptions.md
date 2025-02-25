@@ -12,12 +12,8 @@ Represents daily exchange rates for various currencies. !!!NOT FOR PRODUCTION US
 Contains product catalog data for in-game purchases. !!!NOT FOR PRODUCTION USE!!!.
 {% enddocs %}
 
-{% docs intm_all_events_table %}
+{% docs intm_events_table %}
 Contains all events from the events table. USE IN PRODUCTION WITH CAUTION.
-{% enddocs %}
-
-{% docs intm_purchase_events_table %}
-Contains purchase events from the events table. USE IN PRODUCTION WITH CAUTION.
 {% enddocs %}
 
 {% docs fact_purchases_table %}

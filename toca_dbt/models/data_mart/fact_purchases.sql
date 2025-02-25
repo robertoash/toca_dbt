@@ -23,7 +23,7 @@ WITH all_events AS (
         price_local,
         currency_code,
         revenue_local
-    FROM {{ ref('intm_all_events') }}
+    FROM {{ ref('intm_events') }}
 
     {% if is_incremental() %}
       WHERE event_timestamp >= {{ incremental_window('event_timestamp', 2)}}
