@@ -44,8 +44,8 @@ Contains different date conversions.
 Contains product catalog data for in-game purchases. It's data is already contained in fact_purchases table.
 {% enddocs %}
 
-{% docs dim_exchange_rates_table %}
-Contains daily exchange rates for various currencies.
+{% docs exchange_rates_scd_table %}
+Contains exchange rates for various currencies along with the start and end dates for which the rate is valid.
 {% enddocs %}
 
 # Column docs
@@ -58,6 +58,20 @@ Unique identifier for each event constructed by hashing event_timestamp, device_
 
 {% docs exchange_rate_id %}
 Unique identifier for each exchange rate constructed by hashing currency_exchange_date and currency_code.
+{% enddocs %}
+
+## Generic fields
+
+{% docs valid_from %}
+Start date where the validity of the record started.
+{% enddocs %}
+
+{% docs valid_to %}
+Date when the validity of the record ended.
+{% enddocs %}
+
+{% docs is_current %}
+Whether the record is currently valid.
 {% enddocs %}
 
 ## Events table
@@ -111,6 +125,7 @@ Conversion rate to USD.
 {% docs is_extrapolated %}
 Whether the value is extrapolated due to missing data.
 {% enddocs %}
+
 
 ## Products table
 
