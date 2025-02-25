@@ -12,6 +12,14 @@ Represents daily exchange rates for various currencies.
 Contains product catalog data for in-game purchases.
 {% enddocs %}
 
+{% docs intm_all_events_table %}
+Contains all events from the events table.
+{% enddocs %}
+
+{% docs intm_purchase_events_table %}
+Contains purchase events from the events table.
+{% enddocs %}
+
 {% docs fact_purchases_table %}
 Contains aggregated purchase data for in-game purchases.
 {% enddocs %}
@@ -24,16 +32,12 @@ Contains device retention data over time.
 Contains player behavior data.
 {% enddocs %}
 
-{% docs intm_all_events_table %}
-Contains all events from the events table.
-{% enddocs %}
-
-{% docs intm_purchase_events_table %}
-Contains purchase events from the events table.
-{% enddocs %}
-
 {% docs dim_date_table %}
-Contains date dimension data.
+Contains different date conversions.
+{% enddocs %}
+
+{% docs tracker_exchange_rate_effect_table %}
+Contains data on the effect of the exchange rate on the revenue.
 {% enddocs %}
 
 # Column docs
@@ -215,3 +219,10 @@ Date of the first store visit by a user.
 {% docs funnel_step %}
 Current step in the user funnel.
 {% enddocs %}
+
+## Exchange rate effect table
+
+{% docs exchange_rate_effect %}
+Isolated effect of the exchange rate on the revenue.
+{% enddocs %}
+
