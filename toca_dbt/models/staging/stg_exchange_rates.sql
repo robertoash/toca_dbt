@@ -1,8 +1,8 @@
 {{
     config(
         materialized='incremental',
-        unique_key='exchange_rate_id',
         incremental_strategy='merge',
+        unique_key='exchange_rate_id',
         partition_by={
             'field': 'currency_exchange_date',
             'data_type': 'date'
