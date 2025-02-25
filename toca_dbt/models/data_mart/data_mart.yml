@@ -73,6 +73,21 @@ models:
         description: "{{ doc('first_purchase_product_subtype') }}"
       - name: funnel_step
         description: "{{ doc('funnel_step') }}"
+  - name: tracker_exchange_rate_effect
+    description: "{{ doc('tracker_exchange_rate_effect_table') }}"
+    columns:
+      - name: event_date
+        description: "{{ doc('event_date') }}"
+      - name: currency_code
+        description: "{{ doc('currency_code') }}"
+      - name: product_name
+        description: "{{ doc('product_name') }}"
+      - name: exchange_rate
+        description: "{{ doc('usd_per_currency') }}"
+      - name: exchange_rate_effect
+        description: "{{ doc('exchange_rate_effect') }}"
+      - name: sold_quantity
+        description: "{{ doc('quantity') }}"
   - name: dim_product
     description: "{{ doc('products_table') }}"
     columns:
