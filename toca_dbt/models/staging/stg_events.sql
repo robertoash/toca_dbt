@@ -1,17 +1,21 @@
 {{
     config(
-        materialized = 'table',
-        primary_key = 'event_id',
-        partition_by = {"field": "event_date", "data_type": "DATE"},
-        cluster_by = 'event_name',
-        tags = ['hourly']
+        materialized='incremental',
+        unique_key='event_id',
+        incremental_strategy='merge',
+        partition_by={
+            'field': 'event_date',
+            'data_type': 'date'
+        },
+        cluster_by=['event_name'],
+        tags=['hourly']
     )
 }}
 
 WITH base AS (
     SELECT
         event_date,
-        event_timestamp,
+        TIMESTAMP_MICROS(event_timestamp) AS event_timestamp,
         event_name,
         device_id,
         install_id,
@@ -19,6 +23,21 @@ WITH base AS (
         LOWER(TRIM(install_source)) AS install_source,
         event_params
     FROM {{ source('ae_assignment_data', 'events') }}
+
+    {% if is_incremental() %}
+        -- Pull the last 7 days of data to account for event loading delays
+        WHERE TIMESTAMP_MICROS(event_timestamp) >=
+            LEAST(
+                TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY),
+                (
+                    SELECT COALESCE(
+                        MAX(event_timestamp),
+                        TIMESTAMP('1970-01-01')
+                    )
+                    FROM {{ this }}
+                )
+            )
+    {% endif %}
 ),
 
 deduplicated AS (

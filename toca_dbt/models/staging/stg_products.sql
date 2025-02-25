@@ -1,7 +1,7 @@
 {{
     config(
-        materialized = 'view',
-        primary_key = 'product_id'
+        materialized = 'table',
+        tags = ['daily']
     )
 }}
 
@@ -13,5 +13,6 @@ WITH products AS (
     FROM {{ source('ae_assignment_data', 'products') }}
 )
 
-SELECT * FROM products
+SELECT *
+FROM products
 
