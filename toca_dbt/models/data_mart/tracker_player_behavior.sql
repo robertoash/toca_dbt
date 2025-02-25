@@ -1,8 +1,10 @@
 {{
     config(
-        materialized = 'table',
-        partition_by = {"field": "first_active_date", "data_type": "DATE"},
-        cluster_by = ['first_purchase_date'],
+        materialized = 'incremental',
+        incremental_strategy = 'merge',
+        unique_key = 'player_funnel_id',
+        partition_by = {"field": "first_active_date", "data_type": "date"},
+        cluster_by = ['funnel_step', 'first_active_date'],
         tags = ['daily']
     )
 }}
@@ -125,6 +127,12 @@ funnel_steps AS (
 
 final_data AS (
     SELECT
+        {{
+            dbt_utils.generate_surrogate_key(
+                ['fs.device_id',
+                'fs.funnel_step']
+            )
+        }} AS player_funnel_id,
         fs.device_id, -- This is meant to be count distincted when aggregated
         ap.first_active_date,
         sv.first_store_visit_date,

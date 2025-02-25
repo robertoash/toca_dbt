@@ -1,7 +1,10 @@
 {{
     config(
-        materialized = 'table',
+        materialized = 'incremental',
+        incremental_strategy = 'merge',
+        unique_key = 'device_retention_id',
         partition_by = {"field": "first_active_date", "data_type": "DATE"},
+        cluster_by = ['retention_tier'],
         tags = ['daily']
     )
 }}
@@ -17,6 +20,9 @@ WITH event_data AS (
         DATE_DIFF(event_date, MIN(event_date) OVER (PARTITION BY device_id), DAY) AS retention_days,
         MIN(event_date) OVER (PARTITION BY device_id) AS first_active_date
     FROM {{ ref('intm_all_events') }}
+    {% if is_incremental() %}
+        WHERE event_date >= {{ incremental_window(event_date, 2) }}
+    {% endif %}
     GROUP BY
         device_id,
         event_date
@@ -62,6 +68,12 @@ retention_tiers AS (
 )
 
 SELECT
+    {{
+        dbt_utils.generate_surrogate_key(
+            ['device_id',
+            'retention_tier']
+        )
+    }} AS device_retention_id,
     first_active_date,
     device_id, -- This is meant to be count distincted
     retention_tier

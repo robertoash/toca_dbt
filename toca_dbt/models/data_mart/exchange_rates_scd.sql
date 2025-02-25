@@ -1,7 +1,7 @@
 {{
     config(
         materialized = 'table',
-        partition_by = {"field": "currency_exchange_date", "data_type": "DATE"},
+        partition_by = {"field": "valid_from", "data_type": "DATE"},
         cluster_by = ['currency_code'],
         tags = ['daily']
     )
@@ -15,15 +15,20 @@ WITH fx_data AS (
         LEAD(currency_exchange_date) OVER (
             PARTITION BY currency_code
             ORDER BY currency_exchange_date
-        ) AS next_date
+        ) AS next_date,
+        LAG(currency_exchange_date) OVER (
+            PARTITION BY currency_code
+            ORDER BY currency_exchange_date
+        ) AS prev_date
     FROM {{ ref('stg_exchange_rates') }}
 ),
 
 with_end_dates AS (
     SELECT
-        COALESCE(
-            currency_exchange_date,
-            DATE('1970-01-01')
+        IF(
+            prev_date IS NULL,
+            DATE('1970-01-01'),
+            currency_exchange_date
         ) AS valid_from,
         COALESCE(
             next_date,
@@ -31,10 +36,7 @@ with_end_dates AS (
         ) AS valid_to,
         currency_code,
         usd_per_currency,
-        CASE
-            WHEN next_date IS NULL THEN TRUE
-            ELSE FALSE
-        END AS is_current
+        IF(next_date IS NULL, TRUE, FALSE) AS is_current
     FROM fx_data
 )
 

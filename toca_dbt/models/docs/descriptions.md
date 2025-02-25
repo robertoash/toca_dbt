@@ -60,6 +60,18 @@ Unique identifier for each event constructed by hashing event_timestamp, device_
 Unique identifier for each exchange rate constructed by hashing currency_exchange_date and currency_code.
 {% enddocs %}
 
+{% docs purchase_id %}
+Unique identifier for each purchase constructed by hashing purchase_date, device_id and product_name.
+{% enddocs %}
+
+{% docs player_funnel_id %}
+Unique identifier for each player constructed by hashing device_id and funnel_step.
+{% enddocs %}
+
+{% docs device_retention_id %}
+Unique identifier for each device constructed by hashing device_id and retention_tier.
+{% enddocs %}
+
 ## Generic fields
 
 {% docs valid_from %}

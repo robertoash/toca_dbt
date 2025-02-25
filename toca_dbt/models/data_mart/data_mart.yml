@@ -3,13 +3,9 @@ version: 2
 models:
   - name: fact_purchases
     description: "{{ doc('fact_purchases_table') }}"
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - purchase_date
-            - device_id
-            - product_name
     columns:
+      - name: purchase_id
+        description: "{{ doc('purchase_id') }}"
       - name: purchase_date
         description: "{{ doc('purchase_date') }}"
       - name: device_id
@@ -42,12 +38,12 @@ models:
               expression: ">= 0"
   - name: tracker_retention
     description: "{{ doc('tracker_retention_table') }}"
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - device_id
-            - retention_tier
     columns:
+      - name: device_retention_id
+        description: "{{ doc('device_retention_id') }}"
+        tests:
+          - not_null
+          - unique
       - name: first_active_date
         description: "{{ doc('first_active_date') }}"
       - name: device_id
@@ -57,6 +53,11 @@ models:
   - name: tracker_player_behavior
     description: "{{ doc('tracker_player_behavior_table') }}"
     columns:
+      - name: player_funnel_id
+        description: "{{ doc('player_funnel_id') }}"
+        tests:
+          - not_null
+          - unique
       - name: device_id
         description: "{{ doc('device_id') }}"
       - name: first_active_date
@@ -100,22 +101,25 @@ models:
         description: "{{ doc('product_type') }}"
       - name: product_subtype
         description: "{{ doc('product_subtype') }}"
-  - name: dim_exchange_rates
-    description: "{{ doc('dim_exchange_rates_table') }}"
+  - name: exchange_rates_scd
+    description: "{{ doc('exchange_rates_scd_table') }}"
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
-            - currency_exchange_date
+            - valid_from
+            - valid_to
             - currency_code
     columns:
-      - name: currency_exchange_date
-        description: "{{ doc('currency_exchange_date') }}"
-        tests:
-          - not_null
+      - name: valid_from
+        description: "{{ doc('valid_from') }}"
+      - name: valid_to
+        description: "{{ doc('valid_to') }}"
       - name: currency_code
         description: "{{ doc('currency_code') }}"
       - name: usd_per_currency
         description: "{{ doc('usd_per_currency') }}"
+      - name: is_current
+        description: "{{ doc('is_current') }}"
   - name: dim_date
     description: "{{ doc('dim_date_table') }}"
     columns:

@@ -1,21 +1,15 @@
 {{
     config(
-        materialized = 'table',
+        materialized = 'incremental',
+        incremental_strategy = 'merge',
+        unique_key = 'product_exchange_rate_id',
         partition_by = {"field": "purchase_date", "data_type": "DATE"},
-        cluster_by = ['product_name', 'currency_code'],
+        cluster_by = ['currency_code', 'product_name'],
         tags = ['daily']
     )
 }}
 
-WITH exchange_rates AS (
-    SELECT
-        currency_exchange_date,
-        currency_code,
-        usd_per_currency AS exchange_rate
-    FROM `ra_ae_assignment.dim_exchange_rates`
-),
-
-purchases AS (
+WITH purchases AS (
     SELECT
         purchase_date,
         product_name,
@@ -23,6 +17,11 @@ purchases AS (
         revenue_usd,
         SUM(quantity) AS quantity
     FROM {{ ref('fact_purchases') }}
+    {% if is_incremental() %}
+        WHERE TIMESTAMP(purchase_date) >= {{
+            incremental_window(TIMESTAMP(purchase_date), 2)
+        }}
+    {% endif %}
     GROUP BY
         purchase_date,
         product_name,
@@ -74,12 +73,19 @@ currency_deviation AS (
     INNER JOIN product_usd_prices AS pu
         ON pu.purchase_date = po.purchase_date
         AND pu.product_name = po.product_name
-    INNER JOIN exchange_rates AS xr
-        ON xr.currency_exchange_date = po.purchase_date
+    INNER JOIN {{ ref('exchange_rates_scd') }} AS xr
+        ON po.purchase_date BETWEEN xr.valid_from AND xr.valid_to
         AND xr.currency_code = po.currency_code
 )
 
 SELECT
+    {{
+        dbt_utils.generate_surrogate_key(
+            ['purchase_date',
+            'currency_code',
+            'product_name']
+        )
+    }} AS product_exchange_rate_id,
     purchase_date,
     currency_code,
     product_name,

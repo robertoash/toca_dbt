@@ -1,16 +1,20 @@
 {{
     config(
-        materialized = 'table',
-        partition_by = {"field": "purchase_date", "data_type": "DATE"},
-        cluster_by = ['product_name', 'device_category', 'install_source'],
-        tags = ['hourly']
+        materialized='incremental',
+        incremental_strategy='merge',
+        unique_key='purchase_id',
+        partition_by={'field': 'purchase_date', 'data_type': 'date'},
+        cluster_by=['product_name', 'device_category', 'currency_code'],
+        tags=['hourly']
     )
 }}
 
-WITH purchase_events AS (
+WITH all_events AS (
     SELECT
-        event_date AS purchase_date,
+        event_date,
+        event_timestamp,
         device_id,
+        install_id,
         device_category,
         install_source,
         event_name,
@@ -19,14 +23,24 @@ WITH purchase_events AS (
         price_local,
         currency_code,
         revenue_local
-    FROM {{ ref('intm_purchase_events') }}
+    FROM {{ ref('intm_all_events') }}
+
+    {% if is_incremental() %}
+      WHERE event_timestamp >= {{ incremental_window('event_timestamp', 2)}}
+    {% endif %}
 ),
 
-all_events AS (
+purchase_events AS (
+    SELECT *
+    FROM all_events
+    WHERE event_name = 'in_app_purchase'
+),
+
+first_active_dates AS (
     SELECT
         device_id,
         MIN(event_date) AS first_active_date
-    FROM {{ ref('intm_all_events') }}
+    FROM all_events
     GROUP BY device_id
 ),
 
@@ -52,9 +66,18 @@ with_exchange_rates AS (
 )
 
 SELECT
+    {{
+        dbt_utils.generate_surrogate_key(
+            [
+                'purchase_date',
+                'device_id',
+                'product_name'
+            ]
+        )
+    }} AS purchase_id,
     xr.purchase_date,
     xr.device_id,
-    ae.first_active_date,
+    fa.first_active_date,
     xr.install_source,
     xr.device_category,
     xr.product_name,
@@ -65,12 +88,13 @@ SELECT
     ROUND(SUM(xr.revenue_local), 2) AS revenue_local,
     ROUND(SUM(xr.revenue_usd), 2) AS revenue_usd
 FROM with_exchange_rates AS xr
-LEFT JOIN all_events AS ae
-    ON xr.device_id = ae.device_id
+LEFT JOIN first_active_dates AS fa
+    ON xr.device_id = fa.device_id
 GROUP BY
+    purchase_id,
     purchase_date,
     xr.device_id,
-    ae.first_active_date,
+    fa.first_active_date,
     xr.install_source,
     xr.device_category,
     xr.product_name,
