@@ -89,7 +89,7 @@ models:
       - name: sold_quantity
         description: "{{ doc('quantity') }}"
   - name: dim_product
-    description: "{{ doc('products_table') }}"
+    description: "{{ doc('dim_product_table') }}"
     columns:
       - name: product_name
         description: "{{ doc('product_name') }}"
@@ -101,7 +101,7 @@ models:
       - name: product_subtype
         description: "{{ doc('product_subtype') }}"
   - name: dim_exchange_rates
-    description: "{{ doc('exchange_rates_table') }}"
+    description: "{{ doc('dim_exchange_rates_table') }}"
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:

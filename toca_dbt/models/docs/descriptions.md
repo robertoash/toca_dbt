@@ -1,23 +1,23 @@
 # Table docs
 
 {% docs events_table %}
-Event data from Google Firebase.
+Event data from Google Firebase. !!!NOT FOR PRODUCTION USE!!!.
 {% enddocs %}
 
 {% docs exchange_rates_table %}
-Represents daily exchange rates for various currencies.
+Represents daily exchange rates for various currencies. !!!NOT FOR PRODUCTION USE!!!.
 {% enddocs %}
 
 {% docs products_table %}
-Contains product catalog data for in-game purchases.
+Contains product catalog data for in-game purchases. !!!NOT FOR PRODUCTION USE!!!.
 {% enddocs %}
 
 {% docs intm_all_events_table %}
-Contains all events from the events table.
+Contains all events from the events table. USE IN PRODUCTION WITH CAUTION.
 {% enddocs %}
 
 {% docs intm_purchase_events_table %}
-Contains purchase events from the events table.
+Contains purchase events from the events table. USE IN PRODUCTION WITH CAUTION.
 {% enddocs %}
 
 {% docs fact_purchases_table %}
@@ -25,19 +25,27 @@ Contains aggregated purchase data for in-game purchases.
 {% enddocs %}
 
 {% docs tracker_retention_table %}
-Contains device retention data over time.
+Contains device retention data over time. DESIGNED FOR AGGREGATION PURPOSES.
 {% enddocs %}
 
 {% docs tracker_player_behavior_table %}
-Contains player behavior data.
+Contains player behavior data. DESIGNED FOR AGGREGATION PURPOSES.
+{% enddocs %}
+
+{% docs tracker_exchange_rate_effect_table %}
+Contains data on the effect of the exchange rate on the revenue. DESIGNED FOR AGGREGATION PURPOSES.
 {% enddocs %}
 
 {% docs dim_date_table %}
 Contains different date conversions.
 {% enddocs %}
 
-{% docs tracker_exchange_rate_effect_table %}
-Contains data on the effect of the exchange rate on the revenue.
+{% docs dim_product_table %}
+Contains product catalog data for in-game purchases. It's data is already contained in fact_purchases table.
+{% enddocs %}
+
+{% docs dim_exchange_rates_table %}
+Contains daily exchange rates for various currencies.
 {% enddocs %}
 
 # Column docs
