@@ -12,7 +12,7 @@ WITH telemetry_data AS (
         device_id,
         event_date,
         event_name
-    FROM {{ ref('fact_telemetry') }}
+    FROM {{ ref('intm_all_events') }}
 ),
 
 purchase_data AS (

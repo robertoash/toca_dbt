@@ -16,10 +16,6 @@ Contains product catalog data for in-game purchases.
 Contains aggregated purchase data for in-game purchases.
 {% enddocs %}
 
-{% docs fact_telemetry_table %}
-Contains aggregated telemetry data for the app.
-{% enddocs %}
-
 {% docs tracker_retention_table %}
 Contains device retention data over time.
 {% enddocs %}
@@ -34,10 +30,6 @@ Contains all events from the events table.
 
 {% docs intm_purchase_events_table %}
 Contains purchase events from the events table.
-{% enddocs %}
-
-{% docs intm_telemetry_events_table %}
-Contains telemetry events from the events table.
 {% enddocs %}
 
 {% docs dim_date_table %}
@@ -146,15 +138,6 @@ Google Analytics session number.
 Whether the event is part of a subscription.
 {% enddocs %}
 
-{% docs store_impression_device_id %}
-Unique identifier for a device that was shown the store.
-{% enddocs %}
-
-{% docs store_entry_device_id %}
-Unique identifier for a device that entered the store.
-{% enddocs %}
-
-
 ## Fact purchases table
 
 {% docs first_telemetry_date %}
@@ -173,26 +156,8 @@ Price of the product in the local currency.
 Revenue of the product in the local currency.
 {% enddocs %}
 
-{% docs price_usd %}
-Price of the product in USD.
-{% enddocs %}
-
 {% docs revenue_usd %}
 Revenue of the product in USD.
-{% enddocs %}
-
-## Fact telemetry table
-
-{% docs session_count %}
-Number of sessions.
-{% enddocs %}
-
-{% docs store_impression_count %}
-Number of store impressions.
-{% enddocs %}
-
-{% docs store_entry_count %}
-Number of store entries.
 {% enddocs %}
 
 ## Retention table
@@ -209,14 +174,6 @@ Tier of days since installation in which the user has been retained.
 
 {% docs first_purchase_date %}
 Date of the first purchase.
-{% enddocs %}
-
-{% docs total_first_time_purchases %}
-Number of first-time purchases for a given date regardless of product.
-{% enddocs %}
-
-{% docs product_first_time_purchases %}
-Number of first-time purchases of the product for a given first purchase date.
 {% enddocs %}
 
 ## Date dimension table

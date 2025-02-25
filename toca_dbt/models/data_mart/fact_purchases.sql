@@ -26,7 +26,7 @@ telemetry_events AS (
     SELECT
         device_id,
         MIN(event_date) AS first_telemetry_date
-    FROM {{ ref('fact_telemetry') }}
+    FROM {{ ref('intm_all_events') }}
     GROUP BY device_id
 ),
 

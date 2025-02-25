@@ -40,35 +40,6 @@ models:
         tests:
           - dbt_utils.expression_is_true:
               expression: ">= 0"
-  - name: fact_telemetry
-    description: "{{ doc('fact_telemetry_table') }}"
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - event_date
-            - device_id
-            - install_source
-            - device_category
-            - event_name
-    columns:
-      - name: event_date
-        description: "{{ doc('event_date') }}"
-      - name: device_id
-        description: "{{ doc('device_id') }}"
-      - name: install_source
-        description: "{{ doc('install_source') }}"
-      - name: device_category
-        description: "{{ doc('device_category') }}"
-      - name: event_name
-        description: "{{ doc('event_name') }}"
-      - name: event_count
-        description: "{{ doc('event_count') }}"
-      - name: session_count
-        description: "{{ doc('session_count') }}"
-      - name: store_impression_count
-        description: "{{ doc('store_impression_count') }}"
-      - name: store_entry_count
-        description: "{{ doc('store_entry_count') }}"
   - name: tracker_retention
     description: "{{ doc('tracker_retention_table') }}"
     tests:
