@@ -60,7 +60,7 @@ with_exchange_rates AS (
         COALESCE(wp.price_local * er_scd.usd_per_currency, wp.price_local) AS price_usd,
         COALESCE(wp.revenue_local * er_scd.usd_per_currency, wp.revenue_local) AS revenue_usd
     FROM include_products AS wp
-    LEFT JOIN {{ ref('dim_exchange_rates_scd') }} AS er_scd
+    LEFT JOIN {{ ref('exchange_rates_scd') }} AS er_scd
         ON wp.purchase_date BETWEEN er_scd.valid_from AND er_scd.valid_to
         AND wp.currency_code = er_scd.currency_code
 )

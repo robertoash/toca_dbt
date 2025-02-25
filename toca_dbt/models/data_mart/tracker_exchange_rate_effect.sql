@@ -19,7 +19,7 @@ WITH purchases AS (
     FROM {{ ref('fact_purchases') }}
     {% if is_incremental() %}
         WHERE TIMESTAMP(purchase_date) >= {{
-            incremental_window(TIMESTAMP(purchase_date), 2)
+            incremental_window('TIMESTAMP(purchase_date)', 2)
         }}
     {% endif %}
     GROUP BY
