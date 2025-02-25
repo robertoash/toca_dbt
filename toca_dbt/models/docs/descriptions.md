@@ -50,11 +50,17 @@ Contains daily exchange rates for various currencies.
 
 # Column docs
 
-## Events table
+## Key fields
 
 {% docs event_id %}
-Unique identifier for each event.
+Unique identifier for each event constructed by hashing event_timestamp, device_id and event_name.
 {% enddocs %}
+
+{% docs exchange_rate_id %}
+Unique identifier for each exchange rate constructed by hashing currency_exchange_date and currency_code.
+{% enddocs %}
+
+## Events table
 
 {% docs event_date %}
 Date of the event.

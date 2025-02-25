@@ -10,7 +10,6 @@
 
 WITH base AS (
     SELECT
-        {{ dbt_utils.generate_surrogate_key(['event_timestamp', 'install_id', 'event_name']) }} AS event_id,
         event_date,
         event_timestamp,
         event_name,
@@ -24,7 +23,7 @@ WITH base AS (
 
 deduplicated AS (
     SELECT
-        event_id,
+        {{ dbt_utils.generate_surrogate_key(['event_timestamp', 'device_id', 'event_name']) }} AS event_id,
         event_date,
         event_timestamp,
         event_name,
