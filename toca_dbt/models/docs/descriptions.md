@@ -20,12 +20,28 @@ Contains aggregated purchase data for in-game purchases.
 Contains aggregated telemetry data for the app.
 {% enddocs %}
 
-{% docs mart_retention_over_time_table %}
+{% docs tracker_retention_table %}
 Contains device retention data over time.
 {% enddocs %}
 
-{% docs mart_first_purchase_product_table %}
-Contains aggregated data about the products bought as a first purchase.
+{% docs tracker_player_behavior_table %}
+Contains player behavior data.
+{% enddocs %}
+
+{% docs intm_all_events_table %}
+Contains all events from the events table.
+{% enddocs %}
+
+{% docs intm_purchase_events_table %}
+Contains purchase events from the events table.
+{% enddocs %}
+
+{% docs intm_telemetry_events_table %}
+Contains telemetry events from the events table.
+{% enddocs %}
+
+{% docs dim_date_table %}
+Contains date dimension data.
 {% enddocs %}
 
 # Column docs
@@ -100,7 +116,50 @@ Product type (e.g., consumable, subscription).
 Sub-category of the product.
 {% enddocs %}
 
+## Intermediate table fields
+
+{% docs event_origin %}
+Origin of the event.
+{% enddocs %}
+
+{% docs event_count %}
+Number of events.
+{% enddocs %}
+
+{% docs reason %}
+Reason for the event.
+{% enddocs %}
+
+{% docs ga_dedup_id %}
+Google Analytics deduplication ID.
+{% enddocs %}
+
+{% docs ga_session_id %}
+Google Analytics session ID.
+{% enddocs %}
+
+{% docs ga_session_number %}
+Google Analytics session number.
+{% enddocs %}
+
+{% docs subscription %}
+Whether the event is part of a subscription.
+{% enddocs %}
+
+{% docs store_impression_device_id %}
+Unique identifier for a device that was shown the store.
+{% enddocs %}
+
+{% docs store_entry_device_id %}
+Unique identifier for a device that entered the store.
+{% enddocs %}
+
+
 ## Fact purchases table
+
+{% docs first_telemetry_date %}
+Date of the first telemetry event for a device.
+{% enddocs %}
 
 {% docs quantity %}
 Number of items purchased.
@@ -124,46 +183,26 @@ Revenue of the product in USD.
 
 ## Fact telemetry table
 
-{% docs store_impression_device_id %}
-Unique identifier for a device that was shown the store.
+{% docs session_count %}
+Number of sessions.
 {% enddocs %}
 
-{% docs store_entry_device_id %}
-Unique identifier for a device that entered the store.
+{% docs store_impression_count %}
+Number of store impressions.
 {% enddocs %}
 
-## Retention over time table
+{% docs store_entry_count %}
+Number of store entries.
+{% enddocs %}
+
+## Retention table
 
 {% docs install_date %}
 Date of the app installation.
 {% enddocs %}
 
-{% docs d0_users %}
-Number of users who installed the app on the day of installation.
-{% enddocs %}
-
-{% docs d1_retained_users %}
-Number of users who installed the app on the day of installation and returned the next day.
-{% enddocs %}
-
-{% docs d3_retained_users %}
-Number of users who installed the app on the day of installation and returned within the next 3 days.
-{% enddocs %}
-
-{% docs d7_retained_users %}
-Number of users who installed the app on the day of installation and returned within the next 7 days.
-{% enddocs %}
-
-{% docs d1_retention_rate %}
-Ratio of users who installed the app on the day of installation to those of them that returned the next day.
-{% enddocs %}
-
-{% docs d3_retention_rate %}
-Ratio of users who installed the app on the day of installation to those of them that returned within the next 3 days.
-{% enddocs %}
-
-{% docs d7_retention_rate %}
-Ratio of users who installed the app on the day of installation to those of them that returned within the next 7 days.
+{% docs retention_tier %}
+Tier of days since installation in which the user has been retained.
 {% enddocs %}
 
 ## First purchase product table
@@ -178,4 +217,44 @@ Number of first-time purchases for a given date regardless of product.
 
 {% docs product_first_time_purchases %}
 Number of first-time purchases of the product for a given first purchase date.
+{% enddocs %}
+
+## Date dimension table
+
+{% docs event_week %}
+Week of the event.
+{% enddocs %}
+
+{% docs event_month %}
+Month of the event.
+{% enddocs %}
+
+{% docs event_quarter %}
+Quarter of the event.
+{% enddocs %}
+
+{% docs event_year %}
+Year of the event.
+{% enddocs %}
+
+## Player behavior table
+
+{% docs first_purchase_product %}
+Name of the first product purchased by a user.
+{% enddocs %}
+
+{% docs first_purchase_product_type %}
+Type of the first product purchased by a user.
+{% enddocs %}
+
+{% docs first_purchase_product_subtype %}
+Subtype of the first product purchased by a user.
+{% enddocs %}
+
+{% docs first_store_visit_date %}
+Date of the first store visit by a user.
+{% enddocs %}
+
+{% docs funnel_step %}
+Current step in the user funnel.
 {% enddocs %}

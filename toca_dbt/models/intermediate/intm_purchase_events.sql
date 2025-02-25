@@ -23,9 +23,6 @@ WITH purchase_events AS (
         currency_code,
         quantity,
         reason,
-        ga_dedup_id,
-        ga_session_id,
-        ga_session_number,
         subscription,
         revenue_local
     FROM {{ ref('intm_all_events') }}

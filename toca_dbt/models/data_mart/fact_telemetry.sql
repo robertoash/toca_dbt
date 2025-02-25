@@ -1,49 +1,46 @@
 {{ config(
     materialized = 'table',
     partition_by = {"field": "event_date", "data_type": "DATE"},
-    cluster_by = ['device_category', 'install_source'],
+    cluster_by = ['event_name', 'device_category'],
     tags = ['daily']
 ) }}
 
 WITH telemetry_events AS (
     SELECT
-        e.event_date,
-        e.device_id,
-        e.install_source,
-        e.device_category,
-        e.event_name,
-        e.ga_session_id
-    FROM {{ ref('intm_telemetry_events') }} AS e
+        event_date,
+        device_id,
+        install_source,
+        device_category,
+        event_name,
+        event_origin,
+        event_count,
+        ga_dedup_id,
+        ga_session_id,
+        ga_session_number,
+        store_impression_device_id,
+        store_entry_device_id
+    FROM {{ ref('intm_telemetry_events') }}
 ),
 
-conversion_rates AS (
+aggregated_events AS (
     SELECT
         event_date,
         device_id,
         install_source,
         device_category,
-        CASE
-            WHEN event_name = 'store_impression' THEN device_id
-            ELSE NULL
-        END AS store_impression_device_id,
-        CASE
-            WHEN event_name = 'store_entry' THEN device_id
-            ELSE NULL
-        END AS store_entry_device_id
+        event_name,
+        COUNT(*) AS event_count,
+        COUNT(DISTINCT ga_session_id) AS session_count,
+        COUNT(DISTINCT store_impression_device_id) AS store_impression_count,
+        COUNT(DISTINCT store_entry_device_id) AS store_entry_count
     FROM telemetry_events
+    GROUP BY
+        event_date,
+        device_id,
+        install_source,
+        device_category,
+        event_name
 )
 
-SELECT
-    event_date,
-    device_id,
-    install_source,
-    device_category,
-    -- Get non-null values
-    MAX(store_impression_device_id) AS store_impression_device_id,
-    MAX(store_entry_device_id) AS store_entry_device_id
-FROM conversion_rates
-GROUP BY
-    event_date,
-    device_id,
-    install_source,
-    device_category
+SELECT *
+FROM aggregated_events

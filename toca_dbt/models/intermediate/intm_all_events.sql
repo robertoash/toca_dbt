@@ -31,9 +31,11 @@ WITH events AS (
         ARRAY_AGG(DISTINCT IF(param.key = 'value', param.value.int_value, NULL) IGNORE NULLS)[OFFSET(0)] AS revenue_local
     FROM {{ ref('stg_events') }}
     CROSS JOIN UNNEST(event_params) AS param
+    -- Deemed not useful for analysis
+    WHERE device_id IS NOT NULL
     GROUP BY event_date, event_timestamp, event_name, device_id, install_id, device_category, install_source
 )
 
--- Step 2: Deduplicate rows
+-- Deduplicate rows
 SELECT DISTINCT *
 FROM events

@@ -1,0 +1,119 @@
+version: 2
+
+models:
+  - name: intm_all_events
+    description: "{{ doc('intm_all_events_table') }}"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - event_timestamp
+            - device_id
+            - event_name
+    columns:
+      - name: event_timestamp
+        description: "{{ doc('event_timestamp') }}"
+      - name: device_id
+        description: "{{ doc('device_id') }}"
+      - name: event_name
+        description: "{{ doc('event_name') }}"
+      - name: event_origin
+        description: "{{ doc('event_origin') }}"
+      - name: event_count
+        description: "{{ doc('event_count') }}"
+      - name: product_name
+        description: "{{ doc('product_name') }}"
+      - name: price_local
+        description: "{{ doc('price_local') }}"
+      - name: currency_code
+        description: "{{ doc('currency_code') }}"
+      - name: quantity
+        description: "{{ doc('quantity') }}"
+      - name: reason
+        description: "{{ doc('reason') }}"
+      - name: subscription
+        description: "{{ doc('subscription') }}"
+      - name: revenue_local
+        description: "{{ doc('revenue_local') }}"
+
+  - name: intm_purchase_events
+    description: "{{ doc('intm_purchase_events_table') }}"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - event_timestamp
+            - device_id
+            - product_name
+    columns:
+      - name: event_date
+        description: "{{ doc('event_date') }}"
+      - name: event_timestamp
+        description: "{{ doc('event_timestamp') }}"
+      - name: device_id
+        description: "{{ doc('device_id') }}"
+      - name: install_id
+        description: "{{ doc('install_id') }}"
+      - name: device_category
+        description: "{{ doc('device_category') }}"
+      - name: install_source
+        description: "{{ doc('install_source') }}"
+      - name: event_name
+        description: "{{ doc('event_name') }}"
+      - name: event_origin
+        description: "{{ doc('event_origin') }}"
+      - name: event_count
+        description: "{{ doc('event_count') }}"
+      - name: product_name
+        description: "{{ doc('product_name') }}"
+      - name: price_local
+        description: "{{ doc('price_local') }}"
+      - name: currency_code
+        description: "{{ doc('currency_code') }}"
+      - name: quantity
+        description: "{{ doc('quantity') }}"
+      - name: reason
+        description: "{{ doc('reason') }}"
+      - name: subscription
+        description: "{{ doc('subscription') }}"
+      - name: revenue_local
+        description: "{{ doc('revenue_local') }}"
+  - name: intm_telemetry_events
+    description: "{{ doc('intm_telemetry_events_table') }}"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - event_timestamp
+            - device_id
+            - event_name
+    columns:
+      - name: event_date
+        description: "{{ doc('event_date') }}"
+      - name: event_timestamp
+        description: "{{ doc('event_timestamp') }}"
+      - name: device_id
+        description: "{{ doc('device_id') }}"
+      - name: install_id
+        description: "{{ doc('install_id') }}"
+      - name: device_category
+        description: "{{ doc('device_category') }}"
+      - name: install_source
+        description: "{{ doc('install_source') }}"
+      - name: event_name
+        description: "{{ doc('event_name') }}"
+      - name: event_origin
+        description: "{{ doc('event_origin') }}"
+      - name: event_count
+        description: "{{ doc('event_count') }}"
+      - name: ga_dedup_id
+        description: "{{ doc('ga_dedup_id') }}"
+      - name: ga_session_id
+        description: "{{ doc('ga_session_id') }}"
+      - name: ga_session_number
+        description: "{{ doc('ga_session_number') }}"
+      - name: store_impression_device_id
+        description: "{{ doc('store_impression_device_id') }}"
+      - name: store_entry_device_id
+        description: "{{ doc('store_entry_device_id') }}"
+
+
+
+

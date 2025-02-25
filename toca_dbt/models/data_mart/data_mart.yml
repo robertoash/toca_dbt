@@ -14,6 +14,8 @@ models:
         description: "{{ doc('event_date') }}"
       - name: device_id
         description: "{{ doc('device_id') }}"
+      - name: first_telemetry_date
+        description: "{{ doc('first_telemetry_date') }}"
       - name: install_source
         description: "{{ doc('install_source') }}"
       - name: device_category
@@ -47,60 +49,59 @@ models:
             - device_id
             - install_source
             - device_category
+            - event_name
     columns:
       - name: event_date
         description: "{{ doc('event_date') }}"
-        tests:
-          - not_null
+      - name: device_id
+        description: "{{ doc('device_id') }}"
       - name: install_source
         description: "{{ doc('install_source') }}"
       - name: device_category
         description: "{{ doc('device_category') }}"
-      - name: store_impression_device_id
-        description: "{{ doc('store_impression_device_id') }}"
-      - name: store_entry_device_id
-        description: "{{ doc('store_entry_device_id') }}"
-  - name: mart_retention_over_time
-    description: "{{ doc('mart_retention_over_time_table') }}"
-    columns:
-      - name: install_date
-        description: "{{ doc('install_date') }}"
-        tests:
-          - not_null
-          - unique
-      - name: d0_users
-        description: "{{ doc('d0_users') }}"
-      - name: d1_retained_users
-        description: "{{ doc('d1_retained_users') }}"
-      - name: d3_retained_users
-        description: "{{ doc('d3_retained_users') }}"
-      - name: d7_retained_users
-        description: "{{ doc('d7_retained_users') }}"
-      - name: d1_retention_rate
-        description: "{{ doc('d1_retention_rate') }}"
-      - name: d3_retention_rate
-        description: "{{ doc('d3_retention_rate') }}"
-      - name: d7_retention_rate
-        description: "{{ doc('d7_retention_rate') }}"
-  - name: mart_first_purchase_product
-    description: "{{ doc('mart_first_purchase_product_table') }}"
+      - name: event_name
+        description: "{{ doc('event_name') }}"
+      - name: event_count
+        description: "{{ doc('event_count') }}"
+      - name: session_count
+        description: "{{ doc('session_count') }}"
+      - name: store_impression_count
+        description: "{{ doc('store_impression_count') }}"
+      - name: store_entry_count
+        description: "{{ doc('store_entry_count') }}"
+  - name: tracker_retention
+    description: "{{ doc('tracker_retention_table') }}"
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
-            - first_purchase_date
-            - product_name
+            - device_id
+            - retention_tier
     columns:
+      - name: install_date
+        description: "{{ doc('install_date') }}"
+      - name: device_id
+        description: "{{ doc('device_id') }}"
+      - name: retention_tier
+        description: "{{ doc('retention_tier') }}"
+  - name: tracker_player_behavior
+    description: "{{ doc('tracker_player_behavior_table') }}"
+    columns:
+      - name: device_id
+        description: "{{ doc('device_id') }}"
+      - name: first_telemetry_date
+        description: "{{ doc('first_telemetry_date') }}"
+      - name: first_store_visit_date
+        description: "{{ doc('first_store_visit_date') }}"
       - name: first_purchase_date
         description: "{{ doc('first_purchase_date') }}"
-        tests:
-          - not_null
-      - name: product_name
-        description: "{{ doc('product_name') }}"
-      - name: product_first_time_purchases
-        description: "{{ doc('product_first_time_purchases') }}"
-        tests:
-          - dbt_utils.expression_is_true:
-              expression: ">= 0"
+      - name: first_purchase_product
+        description: "{{ doc('first_purchase_product') }}"
+      - name: first_purchase_product_type
+        description: "{{ doc('first_purchase_product_type') }}"
+      - name: first_purchase_product_subtype
+        description: "{{ doc('first_purchase_product_subtype') }}"
+      - name: funnel_step
+        description: "{{ doc('funnel_step') }}"
   - name: dim_product
     description: "{{ doc('products_table') }}"
     columns:
@@ -129,3 +130,16 @@ models:
         description: "{{ doc('currency_code') }}"
       - name: usd_per_currency
         description: "{{ doc('usd_per_currency') }}"
+  - name: dim_date
+    description: "{{ doc('dim_date_table') }}"
+    columns:
+      - name: event_date
+        description: "{{ doc('event_date') }}"
+      - name: event_week
+        description: "{{ doc('event_week') }}"
+      - name: event_month
+        description: "{{ doc('event_month') }}"
+      - name: event_quarter
+        description: "{{ doc('event_quarter') }}"
+      - name: event_year
+        description: "{{ doc('event_year') }}"

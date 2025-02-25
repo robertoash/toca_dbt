@@ -22,7 +22,15 @@ WITH purchase_events AS (
     FROM {{ ref('intm_purchase_events') }}
 ),
 
-with_products AS (
+telemetry_events AS (
+    SELECT
+        device_id,
+        MIN(event_date) AS first_telemetry_date
+    FROM {{ ref('fact_telemetry') }}
+    GROUP BY device_id
+),
+
+include_products AS (
     SELECT
         pe.*,
         p.product_type,
@@ -37,31 +45,35 @@ with_exchange_rates AS (
         wp.*,
         COALESCE(wp.price_local * er.usd_per_currency, wp.price_local) AS price_usd,
         COALESCE(wp.revenue_local * er.usd_per_currency, wp.revenue_local) AS revenue_usd
-    FROM with_products AS wp
+    FROM include_products AS wp
     LEFT JOIN {{ ref('dim_exchange_rates') }} AS er
         ON wp.event_date = er.currency_exchange_date
         AND wp.currency_code = er.currency_code
 )
 
 SELECT
-    event_date,
-    device_id,
-    install_source,
-    device_category,
-    product_name,
-    product_type,
-    product_subtype,
-    currency_code,
-    SUM(quantity) AS quantity,
-    ROUND(SUM(revenue_local), 2) AS revenue_local,
-    ROUND(SUM(revenue_usd), 2) AS revenue_usd
-FROM with_exchange_rates
+    xr.event_date,
+    xr.device_id,
+    te.first_telemetry_date,
+    xr.install_source,
+    xr.device_category,
+    xr.product_name,
+    xr.product_type,
+    xr.product_subtype,
+    xr.currency_code,
+    SUM(xr.quantity) AS quantity,
+    ROUND(SUM(xr.revenue_local), 2) AS revenue_local,
+    ROUND(SUM(xr.revenue_usd), 2) AS revenue_usd
+FROM with_exchange_rates AS xr
+LEFT JOIN telemetry_events AS te
+    ON xr.device_id = te.device_id
 GROUP BY
-    event_date,
-    device_id,
-    install_source,
-    device_category,
-    product_name,
-    product_type,
-    product_subtype,
-    currency_code
+    xr.event_date,
+    xr.device_id,
+    te.first_telemetry_date,
+    xr.install_source,
+    xr.device_category,
+    xr.product_name,
+    xr.product_type,
+    xr.product_subtype,
+    xr.currency_code
