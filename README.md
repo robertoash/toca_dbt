@@ -21,16 +21,16 @@ General assumptions:
 
 ### stg_events
 
-    ```json
-    {
-        "materialization": "incremental",
-        "incremental strategy": "merge",
-        "unique key": "event_id",
-        "partition by": "event_date",
-        "cluster by": "event_name",
-        "tags": "hourly"
-    }
-    ```
+```json
+{
+    "materialization": "incremental",
+    "incremental strategy": "merge",
+    "unique key": "event_id",
+    "partition by": "event_date",
+    "cluster by": "event_name",
+    "tags": "hourly"
+}
+```
 
 - Reasoning:
     - materialization: incremental // handles the 100x increase in data more efficiently
@@ -42,16 +42,16 @@ General assumptions:
 
 ### stg_exchange_rates
 
-    ```json
-    {
-        "materialization": "incremental",
-        "incremental strategy": "merge",
-        "unique key": "exchange_rate_id",
-        "partition by": "currency_exchange_date",
-        "cluster by": "currency_code",
-        "tags": "daily"
-    }
-    ```
+```json
+{
+    "materialization": "incremental",
+    "incremental strategy": "merge",
+    "unique key": "exchange_rate_id",
+    "partition by": "currency_exchange_date",
+    "cluster by": "currency_code",
+    "tags": "daily"
+}
+```
 
 - Reasoning:
     - materialization: incremental // we don't expect past data to change
@@ -62,12 +62,12 @@ General assumptions:
 
 ### stg_products
 
-    ```json
-    {
-        "materialization": "table",
-        "tags": "daily"
-    }
-    ```
+```json
+{
+    "materialization": "table",
+    "tags": "daily"
+}
+```
 
 - Reasoning:
     - materialization: table // it is a small dataset that is pretty static
@@ -80,16 +80,16 @@ General assumptions:
 
 ### intm_all_events
 
-    ```json
-    {
-        "materialization": "incremental",
-        "incremental strategy": "merge",
-        "unique key": "event_id",
-        "partition by": "event_date",
-        "cluster by": "event_name",
-        "tags": "hourly"
-    }
-    ```
+```json
+{
+    "materialization": "incremental",
+    "incremental strategy": "merge",
+    "unique key": "event_id",
+    "partition by": "event_date",
+    "cluster by": "event_name",
+    "tags": "hourly"
+}
+```
 
 - Reasoning:
     - materialization: incremental // to handle the load without unnecesary updates
@@ -101,16 +101,16 @@ General assumptions:
 
 ### intm_purchase_events
 
-    ```json
-    {
-        "materialization": "incremental",
-        "incremental strategy": "merge",
-        "unique key": "event_id",
-        "partition by": "event_date",
-        "cluster by": "product_name",
-        "tags": "hourly"
-    }
-    ```
+```json
+{
+    "materialization": "incremental",
+    "incremental strategy": "merge",
+    "unique key": "event_id",
+    "partition by": "event_date",
+    "cluster by": "product_name",
+    "tags": "hourly"
+}
+```
 
 - Reasoning:
     - materialization: incremental // to handle the load without unnecesary updates
@@ -122,14 +122,14 @@ General assumptions:
 
 ### exchange_rates_scd
 
-    ```json
-    {
-        "materialization": "table",
-        "partition by": "valid_from",
-        "cluster by": "currency_code",
-        "tags": "daily"
-    }
-    ```
+```json
+{
+    "materialization": "table",
+    "partition by": "valid_from",
+    "cluster by": "currency_code",
+    "tags": "daily"
+}
+```
 
 - Reasoning:
     - materialization: table // we don't expect many updates to the data
@@ -141,16 +141,16 @@ General assumptions:
 
 ### fact_purchases
 
-    ```json
-    {
-        "materialization": "incremental",
-        "incremental strategy": "merge",
-        "unique key": "purchase_id",
-        "partition by": "purchase_date",
-        "cluster by": "product_name, device_category, currency_code",
-        "tags": "hourly"
-    }
-    ```
+```json
+{
+    "materialization": "incremental",
+    "incremental strategy": "merge",
+    "unique key": "purchase_id",
+    "partition by": "purchase_date",
+    "cluster by": "product_name, device_category, currency_code",
+    "tags": "hourly"
+}
+```
 
 - Reasoning:
     - materialization: incremental // to handle the load without unnecesary updates
@@ -162,16 +162,16 @@ General assumptions:
 
 ### tracker_player_behavior
 
-    ```json
-    {
-        "materialization": "incremental",
-        "incremental strategy": "merge",
-        "unique key": "player_funnel_id",
-        "partition by": "first_active_date",
-        "cluster by": "funnel_step, first_active_date",
-        "tags": "daily"
-    }
-    ```
+```json
+{
+    "materialization": "incremental",
+    "incremental strategy": "merge",
+    "unique key": "player_funnel_id",
+    "partition by": "first_active_date",
+    "cluster by": "funnel_step, first_active_date",
+    "tags": "daily"
+}
+```
 
 - Reasoning:
     - materialization: incremental // to handle the load without unnecesary updates
@@ -183,16 +183,16 @@ General assumptions:
 
 ### tracker_retention
 
-    ```json
-    {
-        "materialization": "incremental",
-        "incremental strategy": "merge",
-        "unique key": "device_retention_id",
-        "partition by": "first_active_date",
-        "cluster by": "retention_tier",
-        "tags": "daily"
-    }
-    ```
+```json
+{
+    "materialization": "incremental",
+    "incremental strategy": "merge",
+    "unique key": "device_retention_id",
+    "partition by": "first_active_date",
+    "cluster by": "retention_tier",
+    "tags": "daily"
+}
+```
 
 - Reasoning:
     - materialization: incremental // to handle the load without unnecesary updates
@@ -204,16 +204,16 @@ General assumptions:
 
 ### tracker_exchange_rate_effect
 
-    ```json
-    {
-        "materialization": "incremental",
-        "incremental strategy": "merge",
-        "unique key": "product_exchange_rate_id",
-        "partition by": "purchase_date",
-        "cluster by": "currency_code, product_name",
-        "tags": "daily"
-    }
-    ```
+```json
+{
+    "materialization": "incremental",
+    "incremental strategy": "merge",
+    "unique key": "product_exchange_rate_id",
+    "partition by": "purchase_date",
+    "cluster by": "currency_code, product_name",
+    "tags": "daily"
+}
+```
 
 - Reasoning:
     - materialization: incremental // to handle the load without unnecesary updates
@@ -225,12 +225,12 @@ General assumptions:
 
 ### dim_product
 
-    ```json
-    {
-        "materialization": "table",
-        "tags": "daily"
-    }
-    ```
+```json
+{
+    "materialization": "table",
+    "tags": "daily"
+}
+```
 
 - Reasoning:
     - materialization: table // it is a small dataset that is pretty static
@@ -242,11 +242,11 @@ General assumptions:
 
 ### dim_date
 
-    ```json
-    {
-        "materialization": "view"
-    }
-    ```
+```json
+{
+    "materialization": "view"
+}
+```
 
 - Reasoning:
     - materialization: view // simple transformation table
