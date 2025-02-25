@@ -2,25 +2,16 @@
 WITH first_purchase_dates AS (
     SELECT
         device_id,
-        MIN(event_date) AS first_purchase_date
-    FROM `toca-data-science-assignment.ra_ae_assignment.fact_purchases`
-    GROUP BY device_id
-),
-
-first_visit_dates AS (
-    SELECT
-        device_id,
-        MIN(event_date) AS first_visit_date
-    FROM `toca-data-science-assignment.ra_ae_assignment.fact_telemetry`
-    GROUP BY device_id
+        first_purchase_date,
+        DATE_TRUNC(first_telemetry_date, MONTH) AS first_telemetry_month,
+        DATE_DIFF(first_purchase_date, first_telemetry_date, DAY) AS days_to_first_purchase,
+    FROM `toca-data-science-assignment.ra_ae_assignment.tracker_player_behavior`
 )
 
 SELECT
-    DATE_DIFF(f.first_purchase_date, v.first_visit_date, DAY) AS days_to_first_purchase,
-    COUNT(DISTINCT f.device_id) AS player_count
-FROM first_purchase_dates AS f
-JOIN first_visit_dates AS v
-    ON f.device_id = v.device_id
-WHERE f.first_purchase_date >= v.first_visit_date
-GROUP BY days_to_first_purchase
-ORDER BY days_to_first_purchase;
+    first_telemetry_month,
+    AVG(days_to_first_purchase) AS avg_days_to_first_purchase
+FROM first_purchase_dates
+WHERE first_purchase_date IS NOT NULL
+GROUP BY first_telemetry_month
+ORDER BY first_telemetry_month DESC;
