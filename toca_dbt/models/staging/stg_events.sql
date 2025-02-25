@@ -26,17 +26,8 @@ WITH base AS (
 
     {% if is_incremental() %}
         -- Pull the last 7 days of data to account for event loading delays
-        WHERE TIMESTAMP_MICROS(event_timestamp) >=
-            LEAST(
-                TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY),
-                (
-                    SELECT COALESCE(
-                        MAX(event_timestamp),
-                        TIMESTAMP('1970-01-01')
-                    )
-                    FROM {{ this }}
-                )
-            )
+        WHERE
+            TIMESTAMP_MICROS(event_timestamp) >= {{ incremental_window('event_timestamp', 7) }}
     {% endif %}
 ),
 
