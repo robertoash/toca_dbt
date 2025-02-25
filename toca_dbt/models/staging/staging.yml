@@ -27,12 +27,12 @@ models:
         description: "{{ doc('install_source') }}"
   - name: stg_exchange_rates
     description: "{{ doc('exchange_rates_table') }}"
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - currency_exchange_date
-            - currency_code
     columns:
+      - name: exchange_rate_id
+        description: "{{ doc('exchange_rate_id') }}"
+        tests:
+          - unique
+          - not_null
       - name: currency_exchange_date
         description: "{{ doc('currency_exchange_date') }}"
       - name: currency_code
