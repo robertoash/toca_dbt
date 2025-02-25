@@ -12,35 +12,38 @@
 WITH event_data AS (
     SELECT
         device_id,
+        event_name,
         event_date,
-        event_name
-    FROM {{ ref('intm_all_events') }}
+        event_timestamp,
+        product_name,
+        product_type,
+        product_subtype
+    FROM {{ ref('intm_events') }}
 ),
 
 purchase_data AS (
     SELECT
         device_id,
-        purchase_date,
+        event_date AS purchase_date,
+        event_timestamp AS purchase_timestamp,
         product_name,
         product_type,
         product_subtype,
-        LEAD(purchase_date) OVER (
+        LEAD(event_date) OVER (
             PARTITION BY device_id
-            ORDER BY purchase_date
+            ORDER BY event_timestamp
         ) AS next_purchase_date
-    FROM {{ ref('fact_purchases') }}
+    FROM event_data
+    WHERE event_name = 'in_app_purchase'
 ),
 
 store_visitors AS (
     SELECT
         device_id,
         event_date,
-        MIN(event_date) OVER (PARTITION BY device_id) AS first_store_visit_date
+        RANK() OVER (PARTITION BY device_id ORDER BY event_timestamp) AS store_visit_rank
     FROM event_data
     WHERE event_name = 'store_entry'
-    GROUP BY
-        device_id,
-        event_date
 ),
 
 all_players AS (
@@ -61,12 +64,12 @@ first_conversion AS (
     FROM purchase_data
     QUALIFY RANK() OVER (
         PARTITION BY device_id
-        ORDER BY purchase_date
+        ORDER BY purchase_timestamp
     ) = 1
 ),
 
 store_after_purchase AS (
-    SELECT
+    SELECT DISTINCT
         p.device_id
     FROM purchase_data AS p
     INNER JOIN store_visitors t
@@ -75,7 +78,7 @@ store_after_purchase AS (
 ),
 
 consecutive_purchases AS (
-    SELECT
+    SELECT DISTINCT
         p.device_id
     FROM purchase_data AS p
     WHERE
@@ -88,7 +91,7 @@ funnel_steps AS (
     SELECT
         ap.device_id,
         '1 Total Players' AS funnel_step
-    FROM all_players ap
+    FROM all_players AS ap
 
     UNION ALL
 
@@ -96,7 +99,7 @@ funnel_steps AS (
     SELECT
         fc.device_id,
         '2 Converted to Payers' AS funnel_step
-    FROM first_conversion fc
+    FROM first_conversion AS fc
 
     UNION ALL
 
@@ -104,7 +107,7 @@ funnel_steps AS (
     SELECT
         sap.device_id,
         '3 Visited Store After Purchase' AS funnel_step
-    FROM store_after_purchase sap
+    FROM store_after_purchase AS sap
 
     UNION ALL
 
@@ -112,7 +115,7 @@ funnel_steps AS (
     SELECT
         cp.device_id,
         '4 Made Consecutive Purchase' AS funnel_step
-    FROM consecutive_purchases cp
+    FROM consecutive_purchases AS cp
 
     UNION ALL
 
@@ -120,8 +123,8 @@ funnel_steps AS (
     SELECT
         ap.device_id,
         'Non-Converted Players' AS funnel_step
-    FROM all_players ap
-    LEFT JOIN first_conversion fc ON ap.device_id = fc.device_id
+    FROM all_players AS ap
+    LEFT JOIN first_conversion AS fc ON ap.device_id = fc.device_id
     WHERE fc.device_id IS NULL
 ),
 
@@ -135,7 +138,7 @@ final_data AS (
         }} AS player_funnel_id,
         fs.device_id, -- This is meant to be count distincted when aggregated
         ap.first_active_date,
-        sv.first_store_visit_date,
+        sv.event_date AS first_store_visit_date,
         fc.first_purchase_date,
         fc.first_purchase_product,
         fc.first_purchase_product_type,
@@ -144,7 +147,9 @@ final_data AS (
     FROM funnel_steps fs
     INNER JOIN all_players ap ON fs.device_id = ap.device_id
     LEFT JOIN first_conversion fc ON fs.device_id = fc.device_id
-    LEFT JOIN store_visitors sv ON fs.device_id = sv.device_id
+    LEFT JOIN store_visitors sv
+        ON fs.device_id = sv.device_id
+        AND sv.store_visit_rank = 1
 )
 
 SELECT *
