@@ -1,0 +1,78 @@
+import hashlib
+from datetime import datetime, timedelta
+
+import pandas as pd
+
+
+def model(dbt, session):
+
+    # Explicitly set Dataproc region
+    dbt.config(
+        python={"dataproc_region": "us-central1"}
+
+    # Load base data from the source
+    base_df = dbt.source("ae_assignment_data", "events").to_pandas()
+
+    # Handle incremental logic: Filter for the last 2 days of data
+    if dbt.is_incremental():
+        time_threshold = datetime.now(datetime.UTC) - timedelta(days=2)
+        base_df = base_df[
+            base_df["event_timestamp"] >= time_threshold.timestamp() * 1e6
+        ]
+
+    # Convert event_timestamp from microseconds to TIMESTAMP format
+    base_df["event_timestamp"] = pd.to_datetime(base_df["event_timestamp"], unit="us")
+
+    # Deduplicate and transform event_params
+    base_df["event_params"] = base_df["event_params"].apply(process_event_params)
+
+    # Generate event_id using a hash function
+    base_df["event_id"] = base_df.apply(
+        lambda row: generate_surrogate_key(
+            row["event_timestamp"],
+            row["device_id"],
+            row["install_id"],
+            row["event_name"],
+        ),
+        axis=1,
+    )
+
+    # Handle deduplication of device_id using MAX() logic
+    base_df["device_id"] = base_df.groupby(
+        ["event_timestamp", "install_id", "event_name"]
+    )["device_id"].transform("max")
+
+    # Apply final formatting
+    base_df = base_df[
+        [
+            "event_id",
+            "event_date",
+            "event_timestamp",
+            "event_name",
+            "device_id",
+            "install_id",
+            "device_category",
+            "install_source",
+            "event_params",
+        ]
+    ]
+
+    return base_df
+
+
+def process_event_params(event_params):
+    """Deduplicate and structure event_params as required"""
+    if not event_params:
+        return None
+
+    # Create a set of unique (key, value) tuples to deduplicate
+    unique_pairs = {(param["key"], param["value"]) for param in event_params}
+
+    # Convert back to structured format
+    return [{"key": k, "value": v} for k, v in unique_pairs]
+
+
+def generate_surrogate_key(event_timestamp, device_id, install_id, event_name):
+    """Create a deterministic hash-based surrogate key"""
+    key_string = f"{event_timestamp}-{device_id}-{install_id}-{event_name}"
+    return hashlib.sha256(key_string.encode()).hexdigest()
