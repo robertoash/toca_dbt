@@ -64,7 +64,7 @@ currency_deviation AS (
         pu.purchase_date,
         pu.product_name,
         po.currency_code,
-        xr.exchange_rate,
+        xr.usd_per_currency,
         pu.avg_usd_revenue AS avg_revenue_usd,
         po.avg_usd_revenue AS avg_revenue_usd_incl_xr,
         SAFE_DIVIDE(po.avg_usd_revenue, pu.avg_usd_revenue) AS exchange_rate_effect,
@@ -89,7 +89,7 @@ SELECT
     purchase_date,
     currency_code,
     product_name,
-    exchange_rate, -- This should be averaged when aggregated
+    usd_per_currency AS exchange_rate, -- This should be averaged when aggregated
     exchange_rate_effect, -- This should be averaged when aggregated
     quantity AS sold_quantity
 FROM currency_deviation
