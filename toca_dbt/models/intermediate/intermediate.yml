@@ -12,12 +12,19 @@ models:
     columns:
       - name: event_id
         description: "{{ doc('event_id') }}"
+        tests:
+          - not_null
+          - unique
       - name: event_date
         description: "{{ doc('event_date') }}"
       - name: event_timestamp
         description: "{{ doc('event_timestamp') }}"
+        tests:
+          - not_null
       - name: device_id
         description: "{{ doc('device_id') }}"
+        tests:
+          - not_null
       - name: install_id
         description: "{{ doc('install_id') }}"
       - name: device_category
@@ -26,12 +33,16 @@ models:
         description: "{{ doc('install_source') }}"
       - name: event_name
         description: "{{ doc('event_name') }}"
+        tests:
+          - not_null
       - name: event_origin
         description: "{{ doc('event_origin') }}"
       - name: event_count
         description: "{{ doc('event_count') }}"
       - name: product_name
         description: "{{ doc('product_name') }}"
+        tests:
+          - not_null
       - name: price_local
         description: "{{ doc('price_local') }}"
       - name: currency_code

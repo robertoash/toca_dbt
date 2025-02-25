@@ -53,7 +53,7 @@ Contains exchange rates for various currencies along with the start and end date
 ## Key fields
 
 {% docs event_id %}
-Unique identifier for each event constructed by hashing event_timestamp, device_id and event_name.
+Unique identifier for each event constructed by hashing event_timestamp, device_id, install_id, and event_name.
 {% enddocs %}
 
 {% docs exchange_rate_id %}
