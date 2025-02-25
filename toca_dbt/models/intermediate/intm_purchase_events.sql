@@ -1,14 +1,20 @@
 {{
     config(
-        materialized = 'table',
-        partition_by = {"field": "event_date", "data_type": "DATE"},
-        cluster_by = ['event_name', 'product_name'],
-        tags = ['hourly']
+        materialized='incremental',
+        incremental_strategy='merge',
+        unique_key='event_id',
+        partition_by={
+            'field': 'event_date',
+            'data_type': 'date'
+        },
+        cluster_by=['product_name'],
+        tags=['hourly']
     )
 }}
 
 WITH purchase_events AS (
     SELECT
+        event_id,
         event_date,
         event_timestamp,
         device_id,
@@ -27,7 +33,11 @@ WITH purchase_events AS (
         revenue_local
     FROM {{ ref('intm_all_events') }}
     WHERE event_name = 'in_app_purchase'
+    {% if is_incremental() %}
+        -- Pull the last 7 days of data to account for event loading delays
+        AND event_timestamp >= {{ incremental_window('event_timestamp', 7) }}
+    {% endif %}
 )
 
-SELECT DISTINCT *
+SELECT *
 FROM purchase_events
