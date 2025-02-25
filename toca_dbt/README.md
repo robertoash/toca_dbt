@@ -2,6 +2,12 @@
 
 ## Modeling assumptions
 
+- Duplicate event_params.keys (1 row with 2 prices). First one was taken
+- The visits funnel is assumed to be store_entries > store_impressions. For some reason there are more store entries than impressions
+- Device_id should not be null. Analyses have not been made for those with device_id null.
+- Duplicates in events due to event_param sorting. Fixed in stg_events
+
+
 
 ## Materialization strategy reasoning
 
@@ -113,24 +119,6 @@ General assumptions:
     - tags: hourly // could be tweaked based on usage and freshness requirements downstream
 - Assumptions:
     - Sales data included: high freshness requirements
-
-### dim_product
-
-    ```json
-    {
-        "materialization": "table",
-        "cluster by": "product_type, product_subtype",
-        "tags": "daily"
-    }
-    ```
-
-- Reasoning:
-    - materialization: table // it is a small dataset that is pretty static
-    - cluster_by: none // this is is a small dataset
-    - tags: daily // products won't change categories frequently
-- Assumptions:
-    - Non-sales data: low freshness requirements
-    - This data is expected to grow up to 20x over time (from 198 products)
 
 ### exchange_rates_scd
 
@@ -250,3 +238,15 @@ General assumptions:
     - tags: daily // products won't change categories frequently
 - Assumptions:
     - Non-sales data: low freshness requirements
+    - This data is expected to grow only by 20x over time (from 198 products to ~4000)
+
+### dim_date
+
+    ```json
+    {
+        "materialization": "view"
+    }
+    ```
+
+- Reasoning:
+    - materialization: view // simple transformation table
