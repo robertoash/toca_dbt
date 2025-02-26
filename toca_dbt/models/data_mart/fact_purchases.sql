@@ -24,7 +24,6 @@ WITH all_events AS (
         currency_code,
         revenue_local
     FROM {{ ref('intm_events') }}
-
     {% if is_incremental() %}
       WHERE event_timestamp >= {{ incremental_window('event_timestamp', 2)}}
     {% endif %}
@@ -33,7 +32,7 @@ WITH all_events AS (
 purchase_events AS (
     SELECT
         event_date AS purchase_date,
-        * EXCEPT(event_date)
+        * EXCEPT(event_date, event_name, event_timestamp)
     FROM all_events
     WHERE event_name = 'in_app_purchase'
 ),
