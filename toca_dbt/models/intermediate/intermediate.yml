@@ -9,6 +9,7 @@ models:
             - event_timestamp
             - device_id
             - event_name
+            - install_id
     columns:
       - name: event_id
         description: "{{ doc('event_id') }}"

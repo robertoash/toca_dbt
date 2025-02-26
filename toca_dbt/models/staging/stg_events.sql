@@ -31,9 +31,8 @@ WITH base AS (
     {% endif %}
 ),
 
-deduplicated AS (
+prepared AS (
     SELECT
-        {{ dbt_utils.generate_surrogate_key(['event_timestamp', 'device_id', 'event_name']) }} AS event_id,
         event_date,
         event_timestamp,
         event_name,
@@ -59,11 +58,22 @@ deduplicated AS (
                 ORDER BY key
             )
             FROM UNNEST(event_params)
-        ) AS event_params,
+        ) AS event_params
     FROM base
-    -- Pick the row with the most keys
+),
+
+deduplicated AS (
+    SELECT
+        {{ dbt_utils.generate_surrogate_key(['event_timestamp', 'device_id', 'install_id', 'event_name']) }} AS event_id,
+        *
+    FROM prepared
+    -- Pick the row with the most event_params.keys
     QUALIFY ROW_NUMBER() OVER (
-        PARTITION BY event_id
+        PARTITION BY
+            event_timestamp,
+            device_id,
+            install_id,
+            event_name
         ORDER BY ARRAY_LENGTH(event_params) DESC
     ) = 1
 )
