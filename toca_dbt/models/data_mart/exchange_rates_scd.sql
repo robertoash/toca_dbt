@@ -31,7 +31,7 @@ with_end_dates AS (
             currency_exchange_date
         ) AS valid_from,
         COALESCE(
-            next_date,
+            DATE_SUB(next_date, INTERVAL 1 DAY),
             DATE('2999-12-31')
         ) AS valid_to,
         currency_code,
