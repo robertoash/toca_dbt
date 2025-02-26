@@ -1,6 +1,6 @@
-![Toba Boba Logo](images/toba_boba_logo.png)
-
 # Toba Boba Assignment
+
+![Toba Boba Logo](images/toba_boba_logo.png)
 
 ## Busines Analysis Report
 
