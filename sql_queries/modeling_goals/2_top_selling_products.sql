@@ -2,6 +2,7 @@
 SELECT
     product_name,
     COUNT(*) AS sales_count,
+    SUM(quantity) AS total_quantity,
     SUM(revenue_usd) AS total_revenue_usd
 FROM `toca-data-science-assignment.ra_ae_assignment.fact_purchases`
 GROUP BY product_name
