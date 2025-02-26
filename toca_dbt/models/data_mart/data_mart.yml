@@ -3,9 +3,31 @@ version: 2
 models:
   - name: fact_purchases
     description: "{{ doc('fact_purchases_table') }}"
+    tests:
+      - dbt_utils.expression_is_true:
+          name: fact_purchases_revenue_consistency
+          expression: |
+            (SELECT SUM(revenue_local) FROM {{ ref('fact_purchases') }})
+            =
+            (SELECT SUM(revenue_local) FROM {{ ref('intm_events') }})
+      - dbt_utils.expression_is_true:
+          name: fact_purchases_count_consistency
+          expression: |
+            (SELECT COUNT(*) FROM {{ ref('fact_purchases') }})
+            =
+            (SELECT COUNT(*)
+              FROM (
+                SELECT DISTINCT event_date, device_id, product_name
+                FROM {{ ref('intm_events') }}
+                WHERE event_name = 'in_app_purchase'
+              ) AS purchase_events
+            )
     columns:
       - name: purchase_id
         description: "{{ doc('purchase_id') }}"
+        tests:
+          - not_null
+          - unique
       - name: purchase_date
         description: "{{ doc('purchase_date') }}"
       - name: device_id
@@ -18,6 +40,10 @@ models:
         description: "{{ doc('device_category') }}"
       - name: product_name
         description: "{{ doc('product_name') }}"
+        tests:
+          - relationships:
+              to: ref('dim_product')
+              field: product_name
       - name: product_type
         description: "{{ doc('product_type') }}"
       - name: product_subtype
@@ -26,6 +52,10 @@ models:
         description: "{{ doc('quantity') }}"
       - name: currency_code
         description: "{{ doc('currency_code') }}"
+        tests:
+          - relationships:
+              to: ref('exchange_rates_scd')
+              field: currency_code
       - name: revenue_local
         description: "{{ doc('revenue_local') }}"
         tests:
