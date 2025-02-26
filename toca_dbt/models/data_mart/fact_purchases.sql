@@ -59,6 +59,7 @@ with_exchange_rates AS (
     SELECT
         wp.*,
         -- Allowing nulls is safer than coalescing with local values
+        er_scd.usd_per_currency,
         CASE
             WHEN wp.currency_code = 'USD'
             THEN wp.price_local
@@ -94,6 +95,7 @@ SELECT
     xr.product_type,
     xr.product_subtype,
     xr.currency_code,
+    xr.usd_per_currency,
     SUM(xr.quantity) AS quantity,
     ROUND(SUM(xr.revenue_local), 2) AS revenue_local,
     ROUND(SUM(xr.revenue_usd), 2) AS revenue_usd
@@ -110,4 +112,5 @@ GROUP BY
     xr.product_name,
     xr.product_type,
     xr.product_subtype,
-    xr.currency_code
+    xr.currency_code,
+    xr.usd_per_currency
