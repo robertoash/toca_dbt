@@ -58,8 +58,17 @@ include_products AS (
 with_exchange_rates AS (
     SELECT
         wp.*,
-        COALESCE(wp.price_local * er_scd.usd_per_currency, wp.price_local) AS price_usd,
-        COALESCE(wp.revenue_local * er_scd.usd_per_currency, wp.revenue_local) AS revenue_usd
+        -- Allowing nulls is safer than coalescing with local values
+        CASE
+            WHEN wp.currency_code = 'USD'
+            THEN wp.price_local
+            ELSE wp.price_local * er_scd.usd_per_currency
+        END AS price_usd,
+        CASE
+            WHEN wp.currency_code = 'USD'
+            THEN wp.revenue_local
+            ELSE wp.revenue_local * er_scd.usd_per_currency
+        END AS revenue_usd
     FROM include_products AS wp
     LEFT JOIN {{ ref('exchange_rates_scd') }} AS er_scd
         ON wp.purchase_date BETWEEN er_scd.valid_from AND er_scd.valid_to

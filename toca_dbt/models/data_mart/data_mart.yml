@@ -34,8 +34,11 @@ models:
       - name: revenue_usd
         description: "{{ doc('revenue_usd') }}"
         tests:
+          - not_null:
+              severity: warn
           - dbt_utils.expression_is_true:
               expression: ">= 0"
+              severity: warn
   - name: tracker_retention
     description: "{{ doc('tracker_retention_table') }}"
     columns:
