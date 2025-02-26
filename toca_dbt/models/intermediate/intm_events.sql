@@ -128,5 +128,27 @@ enriched_events AS (
         ON events.product_name = p.product_name
 )
 
-SELECT *
+SELECT
+    event_id,
+    event_date,
+    event_timestamp,
+    device_id,
+    install_id,
+    device_category,
+    install_source,
+    event_name,
+    event_origin,
+    event_count,
+    product_name,
+    product_type,
+    product_subtype,
+    price_local,
+    currency_code,
+    quantity,
+    reason,
+    ga_dedup_id,
+    ga_session_id,
+    ga_session_number,
+    subscription,
+    revenue_local
 FROM enriched_events
