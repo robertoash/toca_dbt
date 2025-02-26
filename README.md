@@ -1,24 +1,26 @@
+![Toba Boba Logo](images/toba_boba_logo.png)
+
 # Toba Boba Assignment
 
 ## Business Analysis
 
-### Product Performance Insights
+#### Product Performance Insights
 
 - creator pack is the biggest product_type
 - left_option_bundle is the top product
 - the worst selling product is wonder_cost_bundle
-- there was a spike in sales at the beginning of the year but then it died down
+- **there was a spike in sales at the beginning of the year but then it died down**
 - earlier on in the year (around the time of the sales spike) a lot of first time buyers were buying possible_card and bar_debate. the proportion has since fallen but given the low sales, we might not want to draw conclusions based on this. what we do know is that they were attractive for first time buyers so they might be worth promoting
 
-### Player Behavior Insights
+#### Player Behavior Insights
 
 - There was a peak in conversion at the beginning of the year and then it died out. This was due to two reasons:
-    - complete collapse of new player intake after February
+    - **complete collapse of new player intake after February**
     - of the few new players that joined, most were not retained and no one visited the store
 
-### Revenue Insights
+#### Revenue Insights
 
-- There was a spike in revenue at the beginning of the year but decreased to a lower level. This was due to the same reasons as the player behavior insights.
+- There was a spike in revenue at the beginning of the year but decreased to a lower level. This was due to the same reasons as mentioned before.
 - However, even though the revenue stabilized at a lower level than the spike, it has not completely collapsed. That means that the players that were acquired early on are still active and spending a lot of money.
 - The top sellers in other currencies are EUR with the bar_debate and possible_card products.
 - Assuming USD prices should be the same globally, we can isolate the exchange rate effect by comparing the same products sold USD vs other currencies. This tells us that the exchange rate effect is highest when selling the realize_floor_bundle product in SEK.
@@ -27,9 +29,9 @@
     - Lowering the price or actively promoting the ones with the highest exchange rate effect, depending on the strategy.
     - Increasing the price or not pushing the ones with the lowest exchange rate effect, depending on the strategy.
 
-### Recommendations
+#### Recommendations
 
-- Immediate measures need to be taken to increase player intake, preferably from the same channels that were used before the spike.
+- **Immediate measures need to be taken to increase player intake, preferably from the same channels that were used before the spike.**
 - We should incentivize the early intake players to stick around since they are the ones keeping the game alive.
 - We should also revise the pricing or promotions of the products with high or low exchange rate effect.
 - Take measures to increase traffic to the store.
@@ -39,7 +41,7 @@
 
 ## Modeling
 
-### Modeling - measures taken but not obviously documented
+#### Modeling - measures taken but not obviously documented
 
 - Duplicate event_params.keys (1 row with 2 prices). First one was taken
 - The visits funnel is assumed to be store_entries > store_impressions. For some reason there are more store entries than impressions
@@ -47,7 +49,7 @@
 - Duplicates in events due to event_param sorting. Fixed in stg_events
 
 
-### Materialization strategy reasoning
+#### Materialization strategy reasoning
 
 General assumptions:
 - All data is expected to be updated daily except for events data which is expected to be updated hourly
@@ -57,7 +59,7 @@ General assumptions:
 - Since all event data is expected to be loaded with a maximum delay of 2 days, all incremental models use a 2 day window for the incremental strategy
 
 
-#### stg_events
+##### stg_events
 
 ```json
 {
@@ -78,7 +80,7 @@ General assumptions:
 - Assumptions:
     - Sales data is included: high freshness is required
 
-#### stg_exchange_rates
+##### stg_exchange_rates
 
 ```json
 {
@@ -98,7 +100,7 @@ General assumptions:
 - Assumptions:
     - Non-sales data: low freshness requirements
 
-#### stg_products
+##### stg_products
 
 ```json
 {
@@ -116,7 +118,7 @@ General assumptions:
     - It is not expected for products to change type and subtype frequently
     - This data is expected to grow up to 20x over time (from 198 products)
 
-#### intm_events
+##### intm_events
 
 ```json
 {
@@ -137,7 +139,7 @@ General assumptions:
 - Assumptions:
     - Sales data included: high freshness requirements
 
-#### exchange_rates_scd
+##### exchange_rates_scd
 
 ```json
 {
@@ -156,7 +158,7 @@ General assumptions:
     - At least daily updates are expected
     - If revenue accuracy is important, the source data should be updated hourly together with the events data
 
-#### fact_purchases
+##### fact_purchases
 
 ```json
 {
@@ -177,7 +179,7 @@ General assumptions:
 - Assumptions:
     - Sales data: high freshness is required
 
-#### tracker_player_behavior
+##### tracker_player_behavior
 
 ```json
 {
@@ -198,7 +200,7 @@ General assumptions:
 - Assumptions:
     - Data for non-time-sensitive analysis: low freshness requirements
 
-#### tracker_retention
+##### tracker_retention
 
 ```json
 {
@@ -219,7 +221,7 @@ General assumptions:
 - Assumptions:
     - Data for non-time-sensitive analysis: low freshness requirements
 
-#### tracker_exchange_rate_effect
+##### tracker_exchange_rate_effect
 
 ```json
 {
@@ -240,7 +242,7 @@ General assumptions:
 - Assumptions:
     - Data for non-time-sensitive analysis: low freshness requirements
 
-#### dim_product
+##### dim_product
 
 ```json
 {
@@ -257,7 +259,7 @@ General assumptions:
     - Non-sales data: low freshness requirements
     - This data is expected to grow only by 20x over time (from 198 products to ~4000)
 
-#### dim_date
+##### dim_date
 
 ```json
 {
